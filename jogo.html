@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>O JOGO</title>
+        <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
     </head>
     <body>
         <style>
@@ -9,40 +12,57 @@
                 margin: 0;
                 background-color: black;
                 height: 100%;
-                margin-top: 1cm;
-                display: flex;
+                margin-top: 80em;
+                display: top;
+                
+            }
+            canvas {
+                border: 2px solid white;
                 justify-content: center;
-                align-items: center;
+                align-items: center; 
+            }
+            #mapa {
+                 display: none;
+                position:absolute;
+                z-index: 1; 
+            }
+
+            #gameMenuCanvas {
+                position:absolute;
+                z-index: 10;
+                /*border: 2px solid rgb(139, 63, 63); Para eu ver se está acima */
+            }
+            #canvassprite{
+                position: absolute;
+                z-index: 2;
             }
         </style>
         
-        <canvas id="canvas">
-        </canvas>
+        <canvas id="mapa"></canvas>
 
-        <script src="canvas.js">
-        </script>
+        <canvas id="canvassprite"></canvas> 
 
-        <script src="./mapa/mapa_colisao.js">
-        </script>
+         <canvas id="gameMenuCanvas" width="1240" height="720"></canvas>
+        
+        <script src="class.js"></script>
+        
+        <script src="./mapa/mapa_colisao.js"></script>
 
-        <script src="class.js">
-        </script>
-
-        <script src="./mapa/mapa.js">
-        </script>
-
-        <canvas id="canvassprite" style="position: absolute; top: 1cm; left: calc(justify-content);"></canvas>
+        <script src="canvasMapa.js"></script>
 
         <script src="canvassprite.js"></script>
-        
-        <script src="npc/pig.js">
-        </script>
 
+<<<<<<< HEAD
         <script src="npc/npc_chopper.js"></script>
 
         <script src="npc/npc_florist.js"></script>
 
         <script src="npc/npc_miner.js"></script>
 
+=======
+        <script src="./MenuGame/gameMenu.js"></script> 
+
+        
+>>>>>>> c9ed2c7959002420bcca2a0af585030becc4914c
     </body>
 </html>
