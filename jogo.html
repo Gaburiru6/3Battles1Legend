@@ -14,11 +14,12 @@
                 height: 100%;
                 margin-top: 80em;
                 display: top;
-                /* justify-content: center;
-                align-items: center; */
+                
             }
             canvas {
                 border: 2px solid white;
+                justify-content: center;
+                align-items: center; 
             }
             #mapa {
                  display: none;
@@ -31,36 +32,28 @@
                 z-index: 10;
                 /*border: 2px solid rgb(139, 63, 63); Para eu ver se está acima */
             }
+            #canvassprite{
+                position: absolute;
+                z-index: 2;
+            }
         </style>
         
-        <canvas id="mapa">
-        </canvas>
+        <canvas id="mapa"></canvas>
 
-         <canvas id="gameMenuCanvas" width="1240" height="720">
-        </canvas>
+        <canvas id="canvassprite"></canvas> 
 
-        <script src="./mapa/mapa.js"></script>
-
-<<<<<<< HEAD
+         <canvas id="gameMenuCanvas" width="1240" height="720"></canvas>
+        
         <script src="class.js"></script>
         
         <script src="./mapa/mapa_colisao.js"></script>
 
         <script src="canvasMapa.js"></script>
 
-        <script src="./MenuGame/gameMenu.js"></script> 
-=======
-        <script src="class.js">
-        </script>
-
-        <script src="./mapa/mapa.js">
-        </script>
-
-        <canvas id="canvassprite" style="position: absolute; top: 1cm; left: calc(justify-content);"></canvas>
-
         <script src="canvassprite.js"></script>
->>>>>>> 06768da6457cdbe53615cc26b686f5354decc49c
-        
 
+        <script src="./MenuGame/gameMenu.js"></script> 
+
+        
     </body>
 </html>
