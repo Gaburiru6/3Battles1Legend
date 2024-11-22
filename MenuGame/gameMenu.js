@@ -1,52 +1,51 @@
-const canvas = document.getElementById('gameMenuCanvas');
-const ctx = canvas.getContext('2d');
-
+const canvasM = document.getElementById('gameMenuCanvas');
+const ctxM = canvasM.getContext("2d")
 // Ajustar o canvas para ocupar a tela inteira
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvasM.width = 1240;
+canvasM.height = 720;
 
 // Propriedades dos botões
-const buttonWidth = 250;
+const buttonWidth = 150;
 const buttonHeight = 70;
 
 const buttons = [
-    { text: "Jogar", x: (canvas.width - buttonWidth) / 2, y: canvas.height / 2 - 100, width: buttonWidth, height: buttonHeight, isHovered: false },
-    { text: "Sair", x: (canvas.width - buttonWidth) / 2, y: canvas.height / 2 + 20, width: buttonWidth, height: buttonHeight, isHovered: false }
+    { text: "Jogar", x: (canvasM.width - buttonWidth) / 2, y: canvasM.height / 2 - 100, width: buttonWidth, height: buttonHeight, isHovered: false },
+    { text: "Sair", x: (canvasM.width - buttonWidth) / 2, y: canvasM.height / 2 + 20, width: buttonWidth, height: buttonHeight, isHovered: false }
 ];
 
 // Carregar a imagem de fundo
 const backgroundImage = new Image();
-backgroundImage.src = 'BackGroundMenu.webp';
+backgroundImage.src = './MenuGame/BackGroundMenu.png';
 
 // Função para desenhar o título do jogo com contorno
 function drawTitle() {
-    ctx.font = "80px 'MedievalSharp', sans-serif"; // Fonte do título
-    ctx.fillStyle = '#f4a460'; // Cor do texto
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctxM.font = "80px 'MedievalSharp', sans-serif"; // Fonte do título
+    ctxM.fillStyle = '#f4a460'; // Cor do texto
+    ctxM.textAlign = 'center';
+    ctxM.textBaseline = 'middle';
 
     // Desenha o contorno
-    ctx.lineWidth = 5; // Largura do contorno
-    ctx.strokeStyle = 'black'; // Cor do contorno
-    ctx.strokeText("Três batalhas, uma lenda", canvas.width / 2, 150); // Desenha o contorno
+    ctxM.lineWidth = 5; // Largura do contorno
+    ctxM.strokeStyle = 'black'; // Cor do contorno
+    ctxM.strokeText("Três batalhas, uma lenda", canvasM.width / 2, 150); // Desenha o contorno
 
     // Desenha o texto principal
-    ctx.fillText("Três batalhas, uma lenda", canvas.width / 2, 150); // Desenha o texto em si
+    ctxM.fillText("Três batalhas, uma lenda", canvasM.width / 2, 150); // Desenha o texto em si
 }
 
 // Função para desenhar os botões
 function drawButtons() {
     buttons.forEach(button => {
         if (button.isHovered) {
-            ctx.fillStyle = '#f39c12'; // Cor quando o botão é hover
+            ctxM.fillStyle = '#f39c12'; // Cor quando o botão é hover
         } else {
-            ctx.fillStyle = 'black'; // Cor verde floresta padrão
+            ctxM.fillStyle = 'black'; // Cor verde floresta padrão
         }
-        ctx.fillRect(button.x, button.y, button.width, button.height);
+        ctxM.fillRect(button.x, button.y, button.width, button.height);
 
-        ctx.fillStyle = 'white';
-        ctx.font = "34px 'MedievalSharp', sans-serif"; // Usando a mesma fonte do título
-        ctx.fillText(button.text, button.x + button.width / 2, button.y + button.height / 2);
+        ctxM.fillStyle = 'white';
+        ctxM.font = "50px 'MedievalSharp', sans-serif"; // Usando a mesma fonte do título
+        ctxM.fillText(button.text, button.x + button.width / 2, button.y + button.height / 2);
     });
 }
 
@@ -59,12 +58,12 @@ function checkHover(x, y) {
 
 // Função para desenhar o fundo da imagem
 function drawBackground() {
-    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+    ctxM.drawImage(backgroundImage, 0, 0, canvasM.width, canvasM.height);
 }
 
 // Função que atualiza a animação do menu
 function updateMenu() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpa a tela
+    ctxM.clearRect(0, 0, canvasM.width, canvasM.height); // Limpa a tela
     
     drawBackground();
     drawTitle();
@@ -72,15 +71,19 @@ function updateMenu() {
 }
 
 // Função que lida com os cliques do mouse
-canvas.addEventListener('click', (e) => {
+canvasM.addEventListener('click', (e) => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
 
     buttons.forEach(button => {
         if (button.isHovered) {
             if (button.text === "Jogar") {
-                window.location.href = 'jogo.html'; // Ultilizar isso para ir a tela do jogo (não consegui)
-                // alert("Iniciar o jogo..."); -Teste para ver se o botão está funcionando
+                canvasM.style.display = 'none'; 
+
+                // Mostra o canvas do jogo
+                const canvasGame = document.getElementById('mapa');
+                canvasGame.style.display = 'block'; // Exibe o canvas do jogo
+                //alert("Iniciar o jogo..."); //-Teste para ver se o botão está funcionando
             } else if (button.text === "Sair") {
                 // alert("Saindo..."); -Teste para ver se o botão está funcionando
                 window.close();
@@ -90,7 +93,7 @@ canvas.addEventListener('click', (e) => {
 });
 
 // Função que lida com o movimento do mouse
-canvas.addEventListener('mousemove', (e) => {
+canvasM.addEventListener('mousemove', (e) => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
     checkHover(mouseX, mouseY);
@@ -103,8 +106,8 @@ backgroundImage.onload = () => {
 };
 
 // Ajusta o tamanho do canvas ao redimensionar a janela
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    updateMenu(); // Atualiza a tela quando a janela for redimensionada
-});
+// window.addEventListener('resize', () => {
+//     canvasM.width = window.innerWidth;
+//     canvasM.height = window.innerHeight;
+//     updateMenu(); // Atualiza a tela quando a janela for redimensionada
+// });

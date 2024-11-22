@@ -8,7 +8,7 @@ class borda {
     }
 
     draw(){
-        ctx.fillStyle = 'rgba(255,0,0,0.0)'
-        ctx.fillRect(this.position.x,this.position.y,this.width,this.height)
+        ctxJ.fillStyle = 'rgba(255,0,0,0.0)'
+        ctxJ.fillRect(this.position.x,this.position.y,this.width,this.height)
     }
 }

@@ -13,7 +13,7 @@ function drawPig() {
 }
 
 function piganimate(){
-    console.log("desenhando pig");
+    //console.log("desenhando pig");
     ctx.clearRect((canvas.width/2) -50, (canvas.height/2)-205,largura*3,altura*2);
     ctx.drawImage(pig, largura * frame, 0, largura, altura, (canvas.width/2) -50, (canvas.height/2) -220, largura*3, altura*3);
     framepig++;

@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>O JOGO</title>
+        <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
     </head>
     <body>
         <style>
@@ -9,30 +12,43 @@
                 margin: 0;
                 background-color: black;
                 height: 100%;
-                margin-top: 1cm;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                margin-top: 80em;
+                display: top;
+                /* justify-content: center;
+                align-items: center; */
+            }
+            canvas {
+                border: 2px solid white;
+            }
+            #mapa {
+                 display: none;
+                position:absolute;
+                z-index: 1; 
+            }
+
+            #gameMenuCanvas {
+                position:absolute;
+                z-index: 10;
+                /*border: 2px solid rgb(139, 63, 63); Para eu ver se está acima */
             }
         </style>
         
-        <canvas id="canvas">
+        <canvas id="mapa">
         </canvas>
 
-        <script src="canvas.js">
-        </script>
+         <canvas id="gameMenuCanvas" width="1240" height="720">
+        </canvas>
 
-        <script src="./mapa/mapa_colisao.js">
-        </script>
+        <script src="./mapa/mapa.js"></script>
 
-        <script src="class.js">
-        </script>
-
-        <script src="./mapa/mapa.js">
-        </script>
+        <script src="class.js"></script>
         
-        <script src="npc/pig.js">
-        </script>
+        <script src="./mapa/mapa_colisao.js"></script>
+
+        <script src="canvasMapa.js"></script>
+
+        <script src="./MenuGame/gameMenu.js"></script> 
+        
 
     </body>
 </html>
