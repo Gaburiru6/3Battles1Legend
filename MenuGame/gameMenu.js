@@ -16,7 +16,7 @@ const buttons = [
 
 // Carregar a imagem de fundo
 const backgroundImage = new Image();
-backgroundImage.src = 'BackGroundMenu.webp'; // Substitua pelo caminho correto da sua imagem
+backgroundImage.src = 'BackGroundMenu.webp';
 
 // Função para desenhar o título do jogo com contorno
 function drawTitle() {
@@ -59,7 +59,6 @@ function checkHover(x, y) {
 
 // Função para desenhar o fundo da imagem
 function drawBackground() {
-    // Desenha a imagem de fundo (espalha ela por toda a tela)
     ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 }
 
@@ -67,7 +66,7 @@ function drawBackground() {
 function updateMenu() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpa a tela
     
-    drawBackground(); // Desenha o fundo
+    drawBackground();
     drawTitle();
     drawButtons();
 }
@@ -80,7 +79,7 @@ canvas.addEventListener('click', (e) => {
     buttons.forEach(button => {
         if (button.isHovered) {
             if (button.text === "Jogar") {
-                window.location.href = 'jogo.html'; // Ultilizar isso para ir a tela do jogo
+                window.location.href = 'jogo.html'; // Ultilizar isso para ir a tela do jogo (não consegui)
                 // alert("Iniciar o jogo..."); -Teste para ver se o botão está funcionando
             } else if (button.text === "Sair") {
                 // alert("Saindo..."); -Teste para ver se o botão está funcionando
