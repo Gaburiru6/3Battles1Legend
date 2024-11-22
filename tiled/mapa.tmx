@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="70" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="1">
  <editorsettings>
-  <export target="../3Battles1Legend/mapa_colisao.tmj" format="json"/>
+  <export target="../../3Battles1Legend/mapa_colisao.tmj" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="Water_Middle.tsx"/>
  <tileset firstgid="2" source="Water_Tile.tsx"/>
