@@ -4,15 +4,23 @@ pig.src = "npc/pig.png";
 let frame = 0;
 const largura = 32;
 const altura = 32;
+let framepig = 0;
 
 function drawPig() {
     pig.onload = function() {
-        console.log("Desenhando porco");
-        console.log(canvas.width);
-        console.log(canvas.height);
-        ctx.drawImage(pig, largura * frame, 0, largura, altura, canvas.width/2, canvas.height/2, largura, altura);
-        frame = (frame + 1) % 4;
+        ctx.drawImage(pig, largura, 0, largura, altura, (canvas.width/2) -50, (canvas.height/2) + -220, largura*3, altura*3);
     }
 }
 
-drawPig();
+function piganimate(){
+    console.log("desenhando pig");
+    ctx.clearRect((canvas.width/2) -50, (canvas.height/2)-205,largura*3,altura*2);
+    ctx.drawImage(pig, largura * frame, 0, largura, altura, (canvas.width/2) -50, (canvas.height/2) -220, largura*3, altura*3);
+    framepig++;
+    if(framepig == 2){
+        framepig = 1;
+    }
+}
+
+let pigInterval = setInterval(piganimate, 250);
+//drawPig();
