@@ -11,9 +11,10 @@
             body{
                 margin: 0;
                 background-color: black;
-                height: 100%;
-                margin-top: 80em;
-                display: top;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;  /* coloca a tela centralizada no eixo de altura.*/
                 
             }
             canvas {
@@ -22,9 +23,9 @@
                 align-items: center; 
             }
             #mapa {
-                 display: none;
+                display: block;
                 position:absolute;
-                z-index: 1; 
+                z-index: 5; 
             }
 
             #gameMenuCanvas {
@@ -40,17 +41,21 @@
         
         <canvas id="mapa"></canvas>
 
-        <canvas id="canvassprite"></canvas> 
+        <canvas id="canvassprite" width="1240" height="720"></canvas> 
 
         <canvas id="gameMenuCanvas" width="1240" height="720"></canvas>
+
+        <script src="./mapa/mapa_colisao.js"></script>
         
         <script src="class.js"></script>
-        
-        <script src="./mapa/mapa_colisao.js"></script>
 
         <script src="canvasMapa.js"></script>
 
         <script src="canvassprite.js"></script>
+
+        <script src="./personagem/animacao.js"></script>
+        
+        <script src="./personagem/movimentacao.js"></script>
 
         <script src="npc/npc_chopper.js"></script>
 
