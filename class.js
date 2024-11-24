@@ -12,38 +12,59 @@ class Borda {
 
     draw(){
         ctx.fillStyle = 'rgba(255,0,0,0.3)'
-        ctx.fillRect(this.position.x,this.position.y,this.width,this.height)
+        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 }
 
-class Sprite{
+class Sprite {
     constructor({ position, velocity, map, frames = { max: 1 }, lines = { line: 1 }, scale = 1 }) {
-        this.position = position
-        this.map = map
-        this.frames = frames
-        this.lines = lines
-        this.scale = scale
+        this.position = position;
+        this.map = map;
+        this.frames = {...frames, val: 0, elapsed: 0};
+        this.lines = lines;
+        this.scale = scale;
 
         this.map.onload = () => {
-            this.width = (this.map.width/this.frames.max) * this.scale
-            this.height = (this.map.height/this.lines.line) * this.scale
-        }
-        
+            this.width = (this.map.width / this.frames.max) * this.scale;
+            this.height = (this.map.height / this.lines.line) * this.scale;
+        };
+        this.movendo = false;
+        this.currentDirection = 0; // Posição inicial (parado para baixo, por exemplo)
     }
 
-    draw(){
+    draw() {
+        ctx.save(); // Salva o estado atual do contexto
+
+        // Verifica se precisa espelhar a imagem para a direção esquerda (32)
+        if (this.currentDirection === 127) {  // Quando o personagem está indo para a esquerda
+            ctx.scale(-1, 1); // Espelha horizontalmente
+            ctx.translate(-this.position.x * 2 - this.width, 0); // Ajusta a posição
+        }
+
+        // Desenha o sprite com base nos parâmetros
         ctx.drawImage(
-            this.map,                                           // A imagem a ser desenhada
-            0,                                                  // Posição X inicial da fatia (crop) da imagem original
-            0,                                                  // Posição Y inicial da fatia (crop) da imagem original
-            this.map.width / this.frames.max,                   // Largura da fatia (crop) da imagem original
-            this.map.height / this.lines.line,                              // Largura da fatia (crop) da imagem original
-            this.position.x,          // Posição X onde a fatia será desenhada no canvas 
-            this.position.y,       // Posição Y onde a fatia será desenhada no canvas
-            (this.map.width / this.frames.max) * this.scale,                                 // Largura da fatia no canvas (redimensionada)
-            (this.map.height / this.lines.line) * this.scale                            // Altura da fatia no canvas (redimensionada)
+            this.map,
+            this.frames.val * (this.map.width / this.frames.max), // Posição X da fatia
+            this.currentDirection,                                // Posição Y da fatia
+            this.map.width / this.frames.max,                    // Largura da fatia
+            this.map.height / this.lines.line,                   // Altura da fatia
+            this.position.x,
+            this.position.y,
+            (this.map.width / this.frames.max) * this.scale,      // Largura no canvas
+            (this.map.height / this.lines.line) * this.scale      // Altura no canvas
         );
+
+        ctx.restore(); // Restaura o estado original do contexto
+
+        // Lógica para animação
+        if (!this.movendo) return;
+        if (this.frames.max > 1) {
+            this.frames.elapsed++;
+        }
+        if (this.frames.elapsed % 10 === 0) {
+            if (this.frames.val < this.frames.max - 1) this.frames.val++;
+            else this.frames.val = 0;
+        }
     }
-    
 }
 
