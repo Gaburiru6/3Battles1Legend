@@ -7,6 +7,7 @@ offset = {
     x: -1280,
     y: -600
 };
+const scale = 2;
 
 const keys = {
     w: { pressed: false },
@@ -17,8 +18,8 @@ const keys = {
 
 const player = new Sprite({                    //criar animacoes
     position: {
-        x: canvas.width / 2 - 192 / 6 / 2,
-        y: canvas.height / 2 - 320 / 10 / 2,
+        x: (canvas.width / 2) - ((192 / 6) * scale/ 2),
+        y: (canvas.height / 2) - ((320 / 10) * scale/ 2),
     },
     map: playerImage,
     frames: {
@@ -26,7 +27,8 @@ const player = new Sprite({                    //criar animacoes
     },
     lines: {
         line: 10
-    }
+    },
+    scale: scale
 
 });
 
