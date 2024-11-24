@@ -29,13 +29,12 @@ class Sprite {
             this.height = (this.map.height / this.lines.line) * this.scale;
         };
         this.movendo = false;
-        this.currentDirection = 0; // Posição inicial (parado para baixo, por exemplo)
+        this.currentDirection = 0; // Posição inicial(EIXO Y) (parado para baixo, nesse caso)
     }
 
     draw() {
         ctx.save(); // Salva o estado atual do contexto
 
-        // Verifica se precisa espelhar a imagem para a direção esquerda (32)
         if (this.currentDirection === 127) {  // Quando o personagem está indo para a esquerda
             ctx.scale(-1, 1); // Espelha horizontalmente
             ctx.translate(-this.position.x * 2 - this.width, 0); // Ajusta a posição
