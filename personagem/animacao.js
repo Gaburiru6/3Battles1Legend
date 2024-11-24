@@ -1,12 +1,36 @@
-const playerImage = new Image();//cria a constante da imagem
-playerImage.src= './Cute_Fantasy_Free/Player/Player.png'//pega a imagem
+const playerImage = new Image(); // Cria a constante da imagem
+playerImage.src = './Cute_Fantasy_Free/Player/Player.png'; // Carrega a imagem do personagem
 
-map.src= '../mapa/mapa.png'//pega a imagem do mapa
+map.src = '../mapa/mapa.png'; // Carrega a imagem do mapa
 
-const offset = {
+offset = {
     x: -1280,
     y: -600
-} 
+};
+const scale = 2;
+
+const keys = {
+    w: { pressed: false },
+    a: { pressed: false },
+    s: { pressed: false },
+    d: { pressed: false }
+};
+
+const player = new Sprite({                    //criar animacoes
+    position: {
+        x: (canvas.width / 2) - ((192 / 6) * scale/ 2),
+        y: (canvas.height / 2) - ((320 / 10) * scale/ 2),
+    },
+    map: playerImage,
+    frames: {
+        max: 6,
+    },
+    lines: {
+        line: 10
+    },
+    scale: scale
+
+});
 
 const background = new Sprite({
     position: {
@@ -14,59 +38,145 @@ const background = new Sprite({
         y: offset.y
     },
     map: map
-})
+});
 
-const keys = {
-    w: {pressed: false},
-    a: {pressed: false},
-    s: {pressed: false},
-    d: {pressed: false}
+const movables = [background, ...bordas, foreground];
+
+function rectangularCollision({ rectangle1, rectangle2 }) {
+    return (
+        rectangle1.position.x + rectangle1.width >= rectangle2.position.x && // Colisão pela direita
+        rectangle1.position.x <= rectangle2.position.x + rectangle2.width && // Colisão pela esquerda
+        rectangle1.position.y <= rectangle2.position.y + rectangle2.height && // Colisão pela parte superior
+        rectangle1.position.y + rectangle1.height >= rectangle2.position.y // Colisão pela parte inferior
+    );
 }
-const testBorda = new Borda({
-    position:{
-        x:400,
-        y:400
-    }
-})
-const movables = [background, testBorda]
 
 function animate() {
+    window.requestAnimationFrame(animate); // Chama a função novamente (loop de animação)
+    background.draw(); // Desenha o fundo
+    bordas.forEach(borda => {
+        borda.draw();
+    });
 
-    window.requestAnimationFrame(animate)
-    background.draw()
-    //bordas.forEach(Borda =>{
-    //    Borda.draw()
-    //})
-    testBorda.draw()
+    player.draw(); // Desenha o personagem
+    foreground.draw()
     
-    ctx.drawImage(playerImage,
-        0,
-        0,
-        playerImage.width / 6,
-        playerImage.height / 10,
-        canvas.width / 2 - (playerImage.width / 6) / 2,
-        canvas.height / 2 - (playerImage.height / 10) / 2,
-        playerImage.width / 6,
-        playerImage.height / 10
-    );
-
+    let movendo = true;
+    player.movendo = false
+    // Movimento para cima (w)
     if (keys.w.pressed && lastKey === 'w') {
-        movables.forEach((movable)=>{
-            movable.position.y += 5
-        })
+        player.movendo = true
+        for (let i = 0; i < bordas.length; i++) {
+            const borda = bordas[i];
+            if (
+                rectangularCollision({
+                    rectangle1: player,
+                    rectangle2: {
+                        ...borda,
+                        position: {
+                            x: borda.position.x,
+                            y: borda.position.y + 5 // Tentando mover o personagem para cima
+                        }
+                    }
+                })
+            ) {
+                movendo = false; // Se houver colisão, impede o movimento
+                break;
+            }
+        }
+
+        if (movendo) {
+            movables.forEach((movable) => {
+                movable.position.y += 5; // Movimenta para cima
+            });
+        }
+
+    // Movimento para a esquerda (a)
     } else if (keys.a.pressed && lastKey === 'a') {
-        movables.forEach((movable)=>{
-            movable.position.x += 5
-        })
+        player.movendo = true;
+
+        for (let i = 0; i < bordas.length; i++) {
+            const borda = bordas[i];
+            if (
+                rectangularCollision({
+                    rectangle1: player,
+                    rectangle2: {
+                        ...borda,
+                        position: {
+                            x: borda.position.x + 5,
+                            y: borda.position.y
+                        }
+                    }
+                })
+            ) {
+                movendo = false;
+                break;
+            }
+        }
+
+        if (movendo) {
+            movables.forEach((movable) => {
+                movable.position.x += 5; // Movimenta para a esquerda
+            });
+        }
+
+    // Movimento para baixo (s)
     } else if (keys.s.pressed && lastKey === 's') {
-        movables.forEach((movable)=>{
-            movable.position.y -= 5
-        })
+        player.movendo = true;
+
+        for (let i = 0; i < bordas.length; i++) {
+            const borda = bordas[i];
+            if (
+                rectangularCollision({
+                    rectangle1: player,
+                    rectangle2: {
+                        ...borda,
+                        position: {
+                            x: borda.position.x,
+                            y: borda.position.y - 5 // Tentando mover o personagem para baixo
+                        }
+                    }
+                })
+            ) {
+                movendo = false;
+                break;
+            }
+        }
+
+        if (movendo) {
+            movables.forEach((movable) => {
+                movable.position.y -= 5; // Movimenta para baixo
+            });
+        }
+
+    // Movimento para a direita (d)
     } else if (keys.d.pressed && lastKey === 'd') {
-        movables.forEach((movable)=>{
-            movable.position.x -= 5
-        })
+        player.movendo = true;
+
+        for (let i = 0; i < bordas.length; i++) {
+            const borda = bordas[i];
+            if (
+                rectangularCollision({
+                    rectangle1: player,
+                    rectangle2: {
+                        ...borda,
+                        position: {
+                            x: borda.position.x - 5,
+                            y: borda.position.y
+                        }
+                    }
+                })
+            ) {
+                movendo = false;
+                break;
+            }
+        }
+
+        if (movendo) {
+            movables.forEach((movable) => {
+                movable.position.x -= 5; // Movimenta para a direita
+            });
+        }
     }
 }
-animate()
- 
+animate();
