@@ -17,15 +17,16 @@ class Borda {
 }
 
 class Sprite{
-    constructor({position, velocity, map, frames = {max: 1}, lines = {line: 1}}){
+    constructor({ position, velocity, map, frames = { max: 1 }, lines = { line: 1 }, scale = 1 }) {
         this.position = position
         this.map = map
         this.frames = frames
         this.lines = lines
+        this.scale = scale
 
         this.map.onload = () => {
-            this.width = this.map.width/this.frames.max 
-            this.height = this.map.height/this.lines.line
+            this.width = (this.map.width/this.frames.max) * this.scale
+            this.height = (this.map.height/this.lines.line) * this.scale
         }
         
     }
@@ -39,8 +40,8 @@ class Sprite{
             this.map.height / this.lines.line,                              // Largura da fatia (crop) da imagem original
             this.position.x,          // Posição X onde a fatia será desenhada no canvas 
             this.position.y,       // Posição Y onde a fatia será desenhada no canvas
-            this.map.width / this.frames.max,                                 // Largura da fatia no canvas (redimensionada)
-            this.map.height / this.lines.line                             // Altura da fatia no canvas (redimensionada)
+            (this.map.width / this.frames.max) * this.scale,                                 // Largura da fatia no canvas (redimensionada)
+            (this.map.height / this.lines.line) * this.scale                            // Altura da fatia no canvas (redimensionada)
         );
     }
     
