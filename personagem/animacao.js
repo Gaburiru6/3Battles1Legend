@@ -38,7 +38,7 @@ const background = new Sprite({
     map: map
 });
 
-const movables = [background, ...bordas];
+const movables = [background, ...bordas, foreground];
 
 function rectangularCollision({ rectangle1, rectangle2 }) {
     return (
@@ -57,6 +57,7 @@ function animate() {
     });
 
     player.draw(); // Desenha o personagem
+    foreground.draw()
     
     let movendo = true;
 
