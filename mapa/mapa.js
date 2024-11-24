@@ -11,7 +11,7 @@ coliMap.forEach((row,i) =>{//cada linha sendo id I
         if(symbol === 1)//se o numero for de colisao
         bordas.push(
         new Borda({
-            posicao:{
+            position:{
                 x: j*Borda.width + offset.x,//coloca as colisoes no local certo e um do lado do outro
                 y: i*Borda.height + offset.y,// assim cada uma tem seu x e y
             } 
