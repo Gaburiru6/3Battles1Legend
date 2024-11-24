@@ -160,7 +160,7 @@ function animate() {
                     rectangle2: {
                         ...borda,
                         position: {
-                            x: borda.position.x - 3,
+                            x: borda.position.x - 5,
                             y: borda.position.y
                         }
                     }
