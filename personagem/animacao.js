@@ -62,9 +62,10 @@ function animate() {
     foreground.draw()
     
     let movendo = true;
-
+    player.movendo = false
     // Movimento para cima (w)
     if (keys.w.pressed && lastKey === 'w') {
+        player.movendo = true
         for (let i = 0; i < bordas.length; i++) {
             const borda = bordas[i];
             if (
@@ -93,7 +94,6 @@ function animate() {
     // Movimento para a esquerda (a)
     } else if (keys.a.pressed && lastKey === 'a') {
         player.movendo = true;
-        //player.image = player.sprites.left;
 
         for (let i = 0; i < bordas.length; i++) {
             const borda = bordas[i];
@@ -123,7 +123,6 @@ function animate() {
     // Movimento para baixo (s)
     } else if (keys.s.pressed && lastKey === 's') {
         player.movendo = true;
-        //player.image = player.sprites.down;
 
         for (let i = 0; i < bordas.length; i++) {
             const borda = bordas[i];
@@ -153,7 +152,6 @@ function animate() {
     // Movimento para a direita (d)
     } else if (keys.d.pressed && lastKey === 'd') {
         player.movendo = true;
-        //player.image = player.sprites.right;
 
         for (let i = 0; i < bordas.length; i++) {
             const borda = bordas[i];
