@@ -3,7 +3,7 @@ playerImage.src= './Cute_Fantasy_Free/Player/Player.png'//pega a imagem
 
 map.src= '../mapa/mapa.png'//pega a imagem do mapa
 
-const offset = {
+offset = {
     x: -1280,
     y: -600
 } 
@@ -34,9 +34,9 @@ function animate() {
 
     window.requestAnimationFrame(animate)
     background.draw()
-    //bordas.forEach(Borda =>{
-    //    Borda.draw()
-    //})
+    bordas.forEach(borda =>{
+        borda.draw()
+    })
     testBorda.draw()
     
     ctx.drawImage(playerImage,
