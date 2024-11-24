@@ -35,6 +35,7 @@ window.addEventListener('keyup', (event) => {
         case 'd':
             keys[event.key].pressed = false;
             player.movendo = false; // Parar movimento ao soltar a tecla
+            player.currentDirection = 0;
             break;
     }
 });
