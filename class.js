@@ -35,7 +35,7 @@ class Sprite {
     draw() {
         ctx.save(); // Salva o estado atual do contexto
 
-        if (this.currentDirection === 127) {  // Quando o personagem está indo para a esquerda
+        if (this.currentDirection === 127 || this.currentDirection === 31) {  // Quando o personagem está indo para a esquerda
             ctx.scale(-1, 1); // Espelha horizontalmente
             ctx.translate(-this.position.x * 2 - this.width, 0); // Ajusta a posição
         }
