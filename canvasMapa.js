@@ -11,6 +11,8 @@ for(let i=0; i < colisao.length; i+= 70){
     coliMap.push(colisao.slice(i,70+i)); // coloca o map de colisao como array a cada 70 numeros
 }
 
+console.log(coliMap)
+
 const bordas = [];
 
 coliMap.forEach((row,i) =>{//cada linha sendo id I
