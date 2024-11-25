@@ -7,7 +7,7 @@ offset = {
     x: -1280,
     y: -600
 };
-const scale = 3;
+const scale = 2;
 
 const keys = {
     w: { pressed: false },
