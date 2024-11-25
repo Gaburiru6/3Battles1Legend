@@ -23,6 +23,6 @@ function piganimate(){
     }
 }
 
-
+drawPig();
 let pigInterval = setInterval(piganimate, 300);
 //drawPig();
