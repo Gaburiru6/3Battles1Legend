@@ -30,12 +30,24 @@ window.addEventListener('keydown', (event) => {
 window.addEventListener('keyup', (event) => {
     switch (event.key) {
         case 'w':
+            keys[event.key].pressed = false;
+            player.movendo = false; // Parar movimento ao soltar a tecla
+            player.currentDirection = 64;
+            break;
         case 'a':
+            keys[event.key].pressed = false;
+            player.movendo = false; // Parar movimento ao soltar a tecla
+            player.currentDirection = 31;
+            break;
         case 's':
-        case 'd':
             keys[event.key].pressed = false;
             player.movendo = false; // Parar movimento ao soltar a tecla
             player.currentDirection = 0;
+            break;
+        case 'd':
+            keys[event.key].pressed = false;
+            player.movendo = false; // Parar movimento ao soltar a tecla
+            player.currentDirection = 32;
             break;
     }
 });
