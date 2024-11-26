@@ -65,6 +65,7 @@
         player.movendo = false
         // Movimento para cima (w)
 
+        const speed = 5;
         if (keys.w.pressed && lastKey === 'w') {
             player.movendo = true
             for (let i = 0; i < bordas.length; i++) {
@@ -87,9 +88,7 @@
             }
 
             if (movendo) {
-                movables.forEach((movable) => {
-                    movable.position.y += 5; // Movimenta para cima
-                });
+                movables.forEach(movable => movable.position.y += speed); // Movimenta para direita
                 player.currentDirection = 160; // Moonwalk correcão
             }
 
@@ -117,9 +116,7 @@
             }
 
             if (movendo) {
-                movables.forEach((movable) => {
-                    movable.position.x += 5; // Movimenta para a esquerda
-                });
+                movables.forEach(movable => movable.position.x += speed); // Movimenta para a esquerda
                 player.currentDirection = 127; // Moonwalk correcão
             }
 
@@ -147,9 +144,7 @@
             }
 
             if (movendo) {
-                movables.forEach((movable) => {
-                    movable.position.y -= 5; // Movimenta para baixo
-                });
+                movables.forEach(movable => movable.position.y -= speed); // Movimenta para baixo
                 player.currentDirection = 96; // Moonwalk correcão
             }
 
@@ -177,9 +172,7 @@
             }
 
             if (movendo) {
-                movables.forEach((movable) => {
-                    movable.position.x -= 5; // Movimenta para a direita
-                });
+                movables.forEach(movable => movable.position.x -= speed); // Movimenta para a direita
                 player.currentDirection = 128; // Moonwalk correcão
             }
         }
