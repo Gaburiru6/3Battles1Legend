@@ -56,7 +56,6 @@ class Sprite {
         ctx.restore(); // Restaura o estado original do contexto
 
         // Lógica para animação
-        if (!this.movendo) return;
         if (this.frames.max > 1) {
             this.frames.elapsed++;
         }
