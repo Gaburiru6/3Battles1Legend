@@ -65,7 +65,7 @@
         player.movendo = false
         // Movimento para cima (w)
 
-        const speed = 5;
+        const speed = 5; // jogar em consts.js quando criar
         if (keys.w.pressed && lastKey === 'w') {
             player.movendo = true
             for (let i = 0; i < bordas.length; i++) {
