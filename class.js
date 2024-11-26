@@ -59,10 +59,17 @@ class Sprite {
         if (this.frames.max > 1) {
             this.frames.elapsed++;
         }
-        if (this.frames.elapsed % 10 === 0) {
-            if (this.frames.val < this.frames.max - 1) this.frames.val++;
-            else this.frames.val = 0;
+        if (this.frames.max > 1) {
+    this.frames.elapsed++;
+    if (this.frames.elapsed % 10 === 0) {
+        if (this.frames.val < this.frames.max - 1) {
+            this.frames.val++;
+        } else {
+            this.frames.val = 0; // Voltar ao primeiro frame quando a animação terminar
         }
+    }
+}
+
     }
 }
 
