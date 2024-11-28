@@ -36,18 +36,26 @@ function drawTitle() {
 // Função para desenhar os botões
 function drawButtons() {
     buttons.forEach(button => {
-        if (button.isHovered) {
-            ctxM.fillStyle = '#f39c12'; // Cor quando o botão é hover
-        } else {
-            ctxM.fillStyle = 'black'; // Cor verde floresta padrão
-        }
-        ctxM.fillRect(button.x, button.y, button.width, button.height);
+        // Se o botão estiver com o hover, aumenta o tamanho da fonte
+        const fontSize = button.isHovered ? 60 : 50; // Tamanho maior quando o mouse está sobre o botão
 
-        ctxM.fillStyle = 'white';
-        ctxM.font = "50px 'MedievalSharp', sans-serif"; // Usando a mesma fonte do título
+        ctxM.fillStyle = 'white'; // Cor do texto (branco)
+        ctxM.font = `${fontSize}px 'MedievalSharp', sans-serif`; // Ajusta o tamanho da fonte
+        ctxM.textAlign = 'center';
+        ctxM.textBaseline = 'middle';
+
+        // Desenha o contorno do texto
+        ctxM.lineWidth = 5; // Largura do contorno
+        ctxM.strokeStyle = 'black'; // Cor do contorno
+        ctxM.strokeText(button.text, button.x + button.width / 2, button.y + button.height / 2);
+
+        // Desenha o texto principal
         ctxM.fillText(button.text, button.x + button.width / 2, button.y + button.height / 2);
     });
 }
+
+
+
 
 // Função para verificar se o mouse está sobre um botão
 function checkHover(x, y) {

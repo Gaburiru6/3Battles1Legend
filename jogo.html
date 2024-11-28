@@ -36,13 +36,16 @@
             }
 
             #gameMenuCanvas {
-                position:absolute;
-                z-index: 10;
-                border: 6px solid ;
-                border-radius: 2rem;
-                border-color: black;
-                /*border: 2px solid rgb(139, 63, 63); Para eu ver se está acima */
-            }
+            position: absolute;
+            z-index: 10;
+            border: 6px solid black; /* Borda preta simples */
+            border-radius: 2rem; /* Borda arredondada */
+    
+            /* Sombra preta ao redor de toda a borda */
+            box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.8); /* Sombra preta com desfoque e espalhamento */
+        }
+
+
             #canvassprite{
                 position: absolute;
                 z-index: 2;
