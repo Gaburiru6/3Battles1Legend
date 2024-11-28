@@ -1,4 +1,4 @@
-// const canvasM = document.getElementById('gameMenuCanvas');
+// canvasM.style.display = 'block';
 // const ctxM = canvasM.getContext("2d")
 // // Ajustar o canvas para ocupar a tela inteira
 // canvasM.width = 1240;

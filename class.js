@@ -14,7 +14,7 @@ class Borda {
     }
 
     draw(){
-        ctx.fillStyle = 'rgba(255,0,0,0.3)'
+        ctx.fillStyle = 'rgba(255,0,0,0.0)' //altere último numero para 0.3 para ver a colisao
         ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 }
@@ -87,14 +87,14 @@ const colisao = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0,
@@ -106,7 +106,7 @@ const colisao = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -222,7 +222,265 @@ const background = new Sprite({
     map: map
 });
 
-const movables = [background, ...bordas, foreground];
+//------------------------------------------------------------------------------------
+
+//npc_chopper.js
+
+// Definição do objeto chopper
+const chopper = {
+    image: new Image(),
+    width: 0,
+    height: 0,
+    frame: 0, // Frame atual (0 ou 1)
+    animationSpeed: 200, // Velocidade da animação (em ms)
+    lastFrameTime: 0, // Marca o tempo do último frame
+    position: {
+        x: (canvas.width / 2) + 430, // Posição inicial x
+        y: (canvas.height / 2) - 200 // Posição inicial y
+    }
+};
+
+// Carregamento da imagem do chopper
+chopper.image.src = "npc/npc_actions.png";
+chopper.image.onload = () => {
+    chopper.width = chopper.image.width / 2; // Largura de cada frame
+    chopper.height = chopper.image.height / 12; // Altura de cada frame
+};
+
+// Função para limpar a área ocupada pelo chopper
+function clearChopper() {
+    ctxsprite.clearRect(
+        chopper.position.x - 1, // Margem para evitar sobras
+        chopper.position.y - 1,
+        chopper.width * 2 + 2, // Limpeza em dobro do tamanho do sprite (com margem)
+        chopper.height * 2 + 2
+    );
+}
+
+// Função para atualizar a animação do chopper
+function updateChopperAnimation(currentTime) {
+    if (currentTime - chopper.lastFrameTime >= chopper.animationSpeed) {
+        chopper.frame = (chopper.frame + 1) % 2; // Alterna entre os frames 0 e 1
+        chopper.lastFrameTime = currentTime; // Atualiza o tempo do último frame
+    }
+}
+
+// Função para desenhar o chopper
+function drawChopper() {
+    // Limpa a área antes de desenhar
+    clearChopper();
+
+    if (chopper.image.complete) {
+        ctxsprite.drawImage(
+            chopper.image,
+            chopper.width * chopper.frame, // Define o frame atual
+            chopper.height * 4, // Linha do sprite sheet
+            chopper.width, // Largura do frame
+            chopper.height, // Altura do frame
+            chopper.position.x, // Posição x no canvas
+            chopper.position.y, // Posição y no canvas
+            chopper.width * 2, // Escala x
+            chopper.height * 2 // Escala y
+        );
+    }
+}
+
+
+
+//-----------------------------------------------------------------------------
+//npc_florist.js
+
+// Definição do objeto florist
+const florist = {
+    image: new Image(),
+    width: 0,
+    height: 0,
+    frame: 0, // Frame atual (0 ou 1)
+    animationSpeed: 2500, // Velocidade da animação (em ms)
+    lastFrameTime: 0, // Marca o tempo do último frame
+    position: {
+        x: (canvas.width / 2) + 550, // Posição inicial x
+        y: (canvas.height / 2) - 540 // Posição inicial y
+    }
+};
+
+// Carregamento da imagem do florist
+florist.image.src = "npc/npc_actions.png";
+florist.image.onload = () => {
+    florist.width = florist.image.width / 2; // Largura de cada frame
+    florist.height = florist.image.height / 12; // Altura de cada frame
+};
+
+// Função para limpar a área ocupada pelo florist
+function clearFlorist() {
+    ctxsprite.clearRect(
+        florist.position.x - 1, // Margem para evitar sobras
+        florist.position.y - 1,
+        florist.width * 2 + 2, // Limpeza em dobro do tamanho do sprite (com margem)
+        florist.height * 2 + 2
+    );
+}
+
+// Função para atualizar a animação do florist
+function updateFloristAnimation(currentTime) {
+    if (currentTime - florist.lastFrameTime >= florist.animationSpeed) {
+        florist.frame = (florist.frame + 1) % 2; // Alterna entre os frames 0 e 1
+        florist.lastFrameTime = currentTime; // Atualiza o tempo do último frame
+    }
+}
+
+// Função para desenhar o florist
+function drawFlorist() {
+    // Limpa a área antes de desenhar
+    clearFlorist();
+
+    if (florist.image.complete) {
+        ctxsprite.drawImage(
+            florist.image,
+            florist.width * florist.frame, // Define o frame atual
+            florist.height * 11, // Linha do sprite sheet
+            florist.width, // Largura do frame
+            florist.height, // Altura do frame
+            florist.position.x, // Posição x no canvas
+            florist.position.y, // Posição y no canvas
+            florist.width * 2, // Escala x
+            florist.height * 2 // Escala y
+        );
+    }
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+
+//npc_miner.js
+
+// Definição do objeto miner
+const miner = {
+    image: new Image(),
+    width: 0,
+    height: 0,
+    frame: 0, // Frame atual (0 ou 1)
+    animationSpeed: 300, // Velocidade da animação (em ms)
+    lastFrameTime: 0, // Marca o tempo do último frame
+    position: {
+        x: (canvas.width / 2) + 750, // Posição inicial x
+        y: (canvas.height / 2) + 350 // Posição inicial y
+    }
+};
+
+// Carregamento da imagem do miner
+miner.image.src = "npc/npc_actions.png";
+miner.image.onload = () => {
+    miner.width = miner.image.width / 2; // Largura de cada frame
+    miner.height = miner.image.height / 12; // Altura de cada frame
+};
+
+// Função para limpar a área ocupada pelo miner
+function clearMiner() {
+    ctxsprite.clearRect(
+        miner.position.x - 1, // Margem para evitar sobras
+        miner.position.y - 1,
+        miner.width * 2 + 2, // Limpeza em dobro do tamanho do sprite (com margem)
+        miner.height * 2 + 2
+    );
+}
+
+// Função para atualizar a animação do miner
+function updateMinerAnimation(currentTime) {
+    if (currentTime - miner.lastFrameTime >= miner.animationSpeed) {
+        miner.frame = (miner.frame + 1) % 2; // Alterna entre os frames 0 e 1
+        miner.lastFrameTime = currentTime; // Atualiza o tempo do último frame
+    }
+}
+
+// Função para desenhar o miner
+function drawMiner() {
+    // Limpa a área antes de desenhar
+    clearMiner();
+
+    if (miner.image.complete) {
+        ctxsprite.drawImage(
+            miner.image,
+            miner.width * miner.frame, // Define o frame atual
+            miner.height * 0, // Linha do sprite sheet (primeira linha)
+            miner.width, // Largura do frame
+            miner.height, // Altura do frame
+            miner.position.x, // Posição x no canvas
+            miner.position.y, // Posição y no canvas
+            miner.width * 2, // Escala x
+            miner.height * 2 // Escala y
+        );
+    }
+}
+
+
+//---------------------------------------------------------------------------------------------------
+
+//pig.js
+
+// Definição do objeto pig
+const pig = {
+    image: new Image(),
+    width: 0,
+    height: 0,
+    frame: 0, // Frame atual (0 ou 1)
+    animationSpeed: 300, // Velocidade da animação (em ms)
+    lastFrameTime: 0, // Marca o tempo do último frame
+    position: {
+        x: (canvas.width / 2) - 50, // Posição inicial x
+        y: (canvas.height / 2) - 220 // Posição inicial y
+    }
+};
+
+// Carregamento da imagem do pig
+pig.image.src = "npc/pig.png";
+pig.image.onload = () => {
+    pig.width = pig.image.width / 2; // Largura de cada frame
+    pig.height = pig.image.height / 2; // Altura de cada frame
+};
+
+// Função para limpar a área ocupada pelo pig
+function clearPig() {
+    ctxsprite.clearRect(
+        pig.position.x - 1, // Margem para evitar sobras
+        pig.position.y - 1,
+        pig.width * 2.5 + 2, // Limpeza proporcional ao tamanho do sprite
+        pig.height * 2.5 + 2
+    );
+}
+
+// Função para atualizar a animação do pig
+function updatePigAnimation(currentTime) {
+    if (currentTime - pig.lastFrameTime >= pig.animationSpeed) {
+        pig.frame = (pig.frame + 1) % 2; // Alterna entre os frames 0 e 1
+        pig.lastFrameTime = currentTime; // Atualiza o tempo do último frame
+    }
+}
+
+// Função para desenhar o pig
+function drawPig() {
+    // Limpa a área antes de desenhar
+    clearPig();
+
+    if (pig.image.complete) {
+        // Desenha o pig com escala ajustada
+        ctxsprite.drawImage(
+            pig.image,
+            pig.width * pig.frame, // Define o frame atual
+            0, // Linha do sprite sheet (primeira linha)
+            pig.width, // Largura do frame
+            pig.height, // Altura do frame
+            pig.position.x, // Posição x no canvas
+            pig.position.y, // Posição y no canvas
+            pig.width * 2.5, // Escala x
+            pig.height * 2.5 // Escala y
+        );
+    }
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------
+
+
+const movables = [background, ...bordas, foreground, chopper, florist, miner, pig];
 
 function rectangularCollision({ rectangle1, rectangle2 }) {
     return (
@@ -234,7 +492,10 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 }
 
 function animate() {
+    const currentTime = performance.now(); // Tempo atual em ms
     window.requestAnimationFrame(animate); // Chama a função novamente (loop de animação)
+    // Limpa a tela antes de redesenhar tudo
+    ctxsprite.clearRect(0, 0, canvas.width, canvas.height);
     background.draw(); // Desenha o fundo
     bordas.forEach(borda => {
         borda.draw();
@@ -242,6 +503,23 @@ function animate() {
 
     player.draw(); // Desenha o personagem
     foreground.draw()
+
+    //NPCS ABAIXO
+    // Atualiza e desenha o chopper
+    updateChopperAnimation(currentTime);
+    drawChopper();
+    // Atualiza e desenha o florist
+    updateFloristAnimation(currentTime);
+    drawFlorist();
+    // Atualiza e desenha o miner
+    updateMinerAnimation(currentTime);
+    drawMiner();
+
+    //ANIMAIS ABAIXO
+    // Atualiza e desenha o miner
+    updatePigAnimation(currentTime);
+    drawPig();
+    
     
     let movendo = true;
     player.movendo = false
@@ -400,127 +678,3 @@ window.addEventListener('keyup', (event) => {
     if (event.key === 's') player.currentDirection = 0;  // Parado para baixo
     if (event.key === 'd') player.currentDirection = 32;  // Parado para a direita
 });
-//------------------------------------------------------------------------------------
-
-//npc_chopper.js
-
-const chopper = new Image();
-chopper.src = "npc/npc_actions.png";
-
-const largurachopper = chopper.width/2;
-const alturachopper = chopper.height/12;
-const chopper_x = (canvas.width/2)-150;
-const chopper_y = (canvas.height/2);
-let framechopper = 0;
-
-function drawchopper() {
-    chopper.onload = function() {
-        ctxsprite.drawImage(chopper, largurachopper, alturachopper*4, largurachopper, alturachopper, chopper_x, chopper_y, largurachopper*2, alturachopper*2);
-    }
-}
-
-function chopperanimate(){
-    ctxsprite.clearRect(chopper_x, chopper_y,largurachopper*1.3,alturachopper*2);
-    ctxsprite.drawImage(chopper, largurachopper * framechopper, alturachopper*4, largurachopper, alturachopper, chopper_x, chopper_y, largurachopper*2, alturachopper*2);
-    framechopper++;
-    if(framechopper == 2){
-        framechopper = 0;
-
-    }
-}
-drawchopper();
-let chopperInterval = setInterval(chopperanimate, 200);
-//-----------------------------------------------------------------------------
-
-//npc_florist.js
-
-const florist = new Image();
-florist.src = "npc/npc_actions.png";
-
-const larguraflorist = florist.width/2;
-const alturaflorist = florist.height/12;
-const florist_x = (canvas.width/2)-90;
-const florist_y = (canvas.height/2);
-let frameflorist = 0;
-
-function drawflorist() {
-    florist.onload = function() {
-        ctxsprite.drawImage(florist, larguraflorist*0, alturaflorist*11, larguraflorist, alturaflorist, florist_x, florist_y , larguraflorist*2, alturaflorist*2);
-    }
-}
-
-function floristanimate(){
-    ctxsprite.clearRect(florist_x, florist_y,larguraflorist*1.7,alturaflorist*1.5);
-    ctxsprite.drawImage(florist, larguraflorist * frameflorist, alturaflorist*11, larguraflorist, alturaflorist, florist_x, florist_y, larguraflorist*2, alturaflorist*2);
-    frameflorist++;
-    if(frameflorist == 2){
-        frameflorist = 0;
-
-    }
-}
-drawflorist();
-let floristInterval = setInterval(floristanimate, 2500);
-//-----------------------------------------------------------------------------------------------------------------------------------------------
-
-//npc_miner.js
-
-const miner = new Image();
-miner.src = "npc/npc_actions.png";
-
-const larguraminer = miner.width/2;
-const alturaminer = miner.height/12;
-const miner_x = (canvas.width/2)+50;
-const miner_y = (canvas.height/2);
-let frameminer = 0;
-
-function drawminer() {
-    miner.onload = function() {
-        ctxsprite.drawImage(miner, larguraminer, 0, larguraminer, alturaminer, miner_x, miner_y , larguraminer*2, alturaminer*2);
-    }
-}
-
-function mineranimate(){
-    ctxsprite.clearRect(miner_x, miner_y, larguraminer*1.7,alturaminer*1.5);
-    ctxsprite.drawImage(miner, larguraminer * frameminer, alturaminer*0, larguraminer, alturaminer, miner_x, miner_y, larguraminer*2, alturaminer*2);
-    frameminer++;
-    if(frameminer == 2){
-        frameminer = 0;
-
-    }
-}
-drawminer();
-let minerInterval = setInterval(mineranimate, 300);
-
-//---------------------------------------------------------------------------------------------------
-
-//pig.js
-
-const pig = new Image();
-pig.src = "npc/pig.png";
-
-const largura = pig.width/2;
-const altura = pig.height/2;
-let framepig = 0;
-
-function drawPig() {
-    pig.onload = function() {
-        ctxsprite.drawImage(pig, largura, 0, largura, altura, (canvas.width/2) -50, (canvas.height/2) + -220, largura*2, altura*2);
-    }
-}
-
-function piganimate(){
-    ctxsprite.clearRect((canvas.width/2) +30, (canvas.height/2)-190,largura*2,altura*2);
-    ctxsprite.drawImage(pig, largura * framepig, 0, largura, altura, (canvas.width/2) +30, (canvas.height/2) -190, largura*2, altura*2);
-    ctxsprite.clearRect((canvas.width/2) -80, (canvas.height/2)-205,largura*2,altura*2);
-    ctxsprite.drawImage(pig, largura * framepig, 0, largura, altura, (canvas.width/2) -80, (canvas.height/2) -205, largura*2.5, altura*2.5);
-    framepig++;
-    if(framepig == 2){
-        framepig = 0;
-
-    }
-}
-
-drawPig();
-let pigInterval = setInterval(piganimate, 300);
-//drawPig();
-

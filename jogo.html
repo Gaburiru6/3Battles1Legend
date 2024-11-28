@@ -11,6 +11,7 @@
             body{
                 margin: 0;
                 background-color: black;
+                background-image: url(mapa/fundo_ilhas.png);
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -21,31 +22,65 @@
                 border: 2px solid white;
                 justify-content: center;
                 align-items: center; 
+                border: 6px solid;
+                border-radius: 2rem;
+                border-color: black;
             }
             #mapa {
                 display: block;
                 position:absolute;
                 z-index: 1; 
+                border: 6px solid ;
+                border-radius: 2rem;
+                border-color: black;
             }
 
             #gameMenuCanvas {
                 position:absolute;
                 z-index: 10;
+                border: 6px solid ;
+                border-radius: 2rem;
+                border-color: black;
                 /*border: 2px solid rgb(139, 63, 63); Para eu ver se está acima */
             }
             #canvassprite{
                 position: absolute;
                 z-index: 2;
+                border: 6px solid ;
+                border-radius: 2rem;
+                border-color: black;
+            }
+            #canvasItens{
+                position: absolute;
+                z-index: 2;
+                border: 6px solid ;
+                border-radius: 2rem;
+                border-color: black;
+            }
+            #cutscene{
+                display: none;
+                position: absolute;
+                z-index: 2;
+                border: 6px solid ;
+                border-radius: 2rem;
+                border-color: black;
+                z-index: 9;
             }
         </style>
         
         <canvas id="mapa"></canvas>
         <canvas id="canvassprite" width="1240" height="720"></canvas> 
+        <canvas id="canvasItens" width="1240" height="720"></canvas> 
         <canvas id="gameMenuCanvas" width="1240" height="720"></canvas>
+        <canvas id="cutscene" width="1240" height="720"></canvas> 
         
         <script src="class.js"></script>
 
         <script src="./MenuGame/gameMenu.js"></script> 
+
+        <script src="./cutscene/cutscene.js"></script>
+
+        <script src="./display/vida.js"></script>
 
         <script src="./Finais/vitoria.js"></script> 
 

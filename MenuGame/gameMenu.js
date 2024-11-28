@@ -79,10 +79,9 @@ canvasM.addEventListener('click', (e) => {
         if (button.isHovered) {
             if (button.text === "Jogar") {
                 canvasM.style.display = 'none'; 
+                cutsc.style.display = 'block';
 
-                // Mostra o canvas do jogo
-                const canvasGame = document.getElementById('mapa');
-                canvasGame.style.display = 'block'; // Exibe o canvas do jogo
+                updateCutsc()
                 //alert("Iniciar o jogo..."); //-Teste para ver se o botão está funcionando
             } else if (button.text === "Sair") {
                 // alert("Saindo..."); -Teste para ver se o botão está funcionando
