@@ -97,6 +97,9 @@ class Sprite {
     
         this.isAttacking = true; // Define estado de ataque
         this.frames.val = 0; // Reseta animação para o primeiro quadro
+
+        // Tocar som de ataque
+        playAttackSound()
     
         // Atualizar `currentDirection` para a linha correspondente à animação de ataque
         switch (this.currentDirection) {
