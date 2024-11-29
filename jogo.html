@@ -66,6 +66,21 @@
                 border-color: black;
                 z-index: 9;
             }
+            #muteButton {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                padding: 10px;
+                font-size: 18px;
+                background-color: rgba(0, 0, 0, 0.6);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+            }
+            #muteButton:hover {
+                background-color: rgba(0, 0, 0, 0.8);
+            }
         </style>
         
         <canvas id="mapa"></canvas>
@@ -73,6 +88,7 @@
         <canvas id="canvasItens" width="1240" height="720"></canvas> 
         <canvas id="gameMenuCanvas" width="1240" height="720"></canvas>
         <canvas id="cutscene" width="1240" height="720"></canvas> 
+        <button id="muteButton">Mutar</button>
         
         <script src="class.js"></script>
 
