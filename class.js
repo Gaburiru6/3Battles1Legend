@@ -19,6 +19,9 @@ class Borda {
     }
 }
 
+let lastAttackTime = 0; // Marca o último momento do ataque
+const attackCooldown = 500; // Tempo de cooldown do ataque em milissegundos
+
 class Sprite {
     constructor({ position, velocity, map, frames = { max: 1 }, lines = { line: 1 }, scale = 1 }) {
         this.position = position;
@@ -33,6 +36,15 @@ class Sprite {
         };
         this.movendo = false;
         this.currentDirection = 0; // Posição inicial(EIXO Y) (parado para baixo, nesse caso)
+        this.isAttacking = false; // Novo estado de ataque
+        this.attackBox = {
+            position: {
+                x: this.position.x,
+                y: this.position.y
+            },
+            width: 50, // Largura da área de ataque
+            height: 50 // Altura da área de ataque
+        };
     }
 
     draw() {
@@ -61,18 +73,64 @@ class Sprite {
         // Lógica para animação
         if (this.frames.max > 1) {
             this.frames.elapsed++;
+            if (this.frames.elapsed % 10 === 0) {
+                if (this.frames.val < this.frames.max - 1) {
+                    this.frames.val++;
+                } else {
+                    this.frames.val = 0;
+                }
+            }
         }
-        if (this.frames.max > 1) {
-    this.frames.elapsed++;
-    if (this.frames.elapsed % 10 === 0) {
-        if (this.frames.val < this.frames.max - 1) {
-            this.frames.val++;
-        } else {
-            this.frames.val = 0; // Voltar ao primeiro frame quando a animação terminar
+        // Desenhar a área de ataque (bloco invisível)
+        if (this.isAttacking) {
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Vermelho semitransparente
+            ctx.fillRect(
+                this.attackBox.position.x,
+                this.attackBox.position.y,
+                this.attackBox.width,
+                this.attackBox.height
+            );
         }
     }
-}
+    attack() {
+        const now = performance.now(); // Tempo atual
+        if (this.isAttacking || now - lastAttackTime < 500) return; // Bloqueia ataque em cooldown
 
+        this.isAttacking = true;
+        lastAttackTime = now; // Atualiza o momento do ataque
+        this.updateAttackBox();
+
+        console.log('Ataque iniciado:', this.attackBox.position);
+
+        setTimeout(() => {
+            this.isAttacking = false; // Termina o ataque após 500ms
+        }, 500);
+    }
+    updateAttackBox() {
+        // Atualizar a posição da área de ataque com base na direção atual
+        switch (this.currentDirection) {
+            case 0:
+            case 96: // Para baixo
+                this.attackBox.position.x = this.position.x;
+                this.attackBox.position.y = this.position.y + this.height;
+                break;
+            case 31:
+            case 127: // Para a esquerda
+                this.attackBox.position.x = this.position.x - this.attackBox.width;
+                this.attackBox.position.y = this.position.y;
+                break;
+            case 32:
+            case 128: // Para a direita
+                this.attackBox.position.x = this.position.x + this.width;
+                this.attackBox.position.y = this.position.y;
+                break;
+
+            case 64:
+            case 160: // Para cima
+                this.attackBox.position.x = this.position.x;
+                this.attackBox.position.y = this.position.y - this.attackBox.height;
+                break;
+        }
     }
 }
 
@@ -494,15 +552,15 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 function animate() {
     const currentTime = performance.now(); // Tempo atual em ms
     window.requestAnimationFrame(animate); // Chama a função novamente (loop de animação)
+    
     // Limpa a tela antes de redesenhar tudo
     ctxsprite.clearRect(0, 0, canvas.width, canvas.height);
-    background.draw(); // Desenha o fundo
-    bordas.forEach(borda => {
-        borda.draw();
-    });
-
-    player.draw(); // Desenha o personagem
-    foreground.draw()
+    
+    // Desenhar o fundo e bordas
+    background.draw();
+    bordas.forEach(borda => borda.draw());
+    // Se o personagem não estiver atacando, permitir movimentação
+    
 
     //NPCS ABAIXO
     // Atualiza e desenha o chopper
@@ -521,11 +579,18 @@ function animate() {
     drawPig();
     
     
+    // Desenhar o personagem
+    player.draw();
+    foreground.draw();
+
     let movendo = true;
-    player.movendo = false
+    player.movendo = false;
+
     // Movimento para cima (w)
 
     const speed = 5; // jogar em consts.js quando criar
+    // Se o personagem não estiver atacando, permitir movimentação
+    if (!player.isAttacking) {
     if (keys.w.pressed && lastKey === 'w') {
         player.movendo = true
         for (let i = 0; i < bordas.length; i++) {
@@ -550,6 +615,7 @@ function animate() {
         if (movendo) {
             movables.forEach(movable => movable.position.y += speed); // Movimenta para direita
             player.currentDirection = 160; // Moonwalk correcão
+            player.updateAttackBox(); // Atualiza a posição da área de ataque
         }
 
     // Movimento para a esquerda (a)
@@ -578,6 +644,7 @@ function animate() {
         if (movendo) {
             movables.forEach(movable => movable.position.x += speed); // Movimenta para a esquerda
             player.currentDirection = 127; // Moonwalk correcão
+            player.updateAttackBox(); // Atualiza a posição da área de ataque
         }
 
     // Movimento para baixo (s)
@@ -606,6 +673,7 @@ function animate() {
         if (movendo) {
             movables.forEach(movable => movable.position.y -= speed); // Movimenta para baixo
             player.currentDirection = 96; // Moonwalk correcão
+            player.updateAttackBox(); // Atualiza a posição da área de ataque
         }
 
     // Movimento para a direita (d)
@@ -634,7 +702,9 @@ function animate() {
         if (movendo) {
             movables.forEach(movable => movable.position.x -= speed); // Movimenta para a direita
             player.currentDirection = 128; // Moonwalk correcão
+            player.updateAttackBox(); // Atualiza a posição da área de ataque
         }
+    }
     }
 }
 animate();
@@ -642,6 +712,21 @@ animate();
 //movimentacao.js
 window.addEventListener('keydown', (event) => {
     switch (event.key) {
+        case ' ': // Barra de espaço para atacar
+            if (!player.isAttacking) { // Evitar ataques múltiplos simultâneos
+                player.isAttacking = true; // Ativar estado de ataque
+                player.movendo = false; // Parar o movimento
+                player.frames.val = 0; // Resetar a animação
+                player.updateAttackBox(); // Atualizar posição do bloco de ataque
+                
+                console.log('Ataque iniciado:', player.attackBox); // Log da área de ataque
+
+                setTimeout(() => {
+                    player.isAttacking = false; // Finalizar ataque após a animação
+                    console.log('Ataque concluído');
+                }, 500); // Duração do ataque em milissegundos
+            }
+            break;
         case 'w':
             keys.w.pressed = true;
             lastKey = 'w';
@@ -670,7 +755,7 @@ window.addEventListener('keydown', (event) => {
 });
 
 window.addEventListener('keyup', (event) => {
-    keys[event.key].pressed = false;
+    if (keys[event.key]) keys[event.key].pressed = false;
     player.movendo = false;
 
     if (event.key === 'w') player.currentDirection = 64;  // Parado para cima
