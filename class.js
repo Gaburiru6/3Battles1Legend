@@ -477,10 +477,72 @@ function drawPig() {
     }
 }
 
+//esqueleto----------------------------------------------------------------------------------------------------------------
+
+// Definição do objeto esqueleto
+const esqueleto = {
+    image: new Image(),
+    width: 0,
+    height: 0,
+    frame: 0, // Frame atual (0 ou 1)
+    animationSpeed: 300, // Velocidade da animação (em ms)
+    lastFrameTime: 0, // Marca o tempo do último frame
+    position: {
+        x: (canvas.width / 2) - 60, // Posição inicial x
+        y: (canvas.height / 2) - 100 // Posição inicial y
+    }
+};
+
+// Carregamento da imagem do esqueleto
+esqueleto.image.src = "Cute_Fantasy_Free/Enemies/Skeleton.png";
+esqueleto.image.onload = () => {
+    esqueleto.width = esqueleto.image.width / 17; // Largura de cada frame
+    esqueleto.height = esqueleto.image.height / 9; // Altura de cada frame
+};
+
+// Função para limpar a área ocupada pelo esqueleto
+function clearesqueleto() {
+    ctxsprite.clearRect(
+        esqueleto.position.x - 1, // Margem para evitar sobras
+        esqueleto.position.y - 1,
+        esqueleto.width * 2 + 2, // Limpeza proporcional ao tamanho do sprite
+        esqueleto.height * 2 + 2
+    );
+}
+
+// Função para atualizar a animação do esqueleto
+function updateesqueletoAnimation(currentTime) {
+    if (currentTime - esqueleto.lastFrameTime >= esqueleto.animationSpeed) {
+        esqueleto.frame = (esqueleto.frame + 1) % 2; // Alterna entre os frames 0 e 1
+        esqueleto.lastFrameTime = currentTime; // Atualiza o tempo do último frame
+    }
+}
+
+// Função para desenhar o esqueleto
+function drawesqueleto() {
+    // Limpa a área antes de desenhar
+    clearesqueleto();
+
+    if (esqueleto.image.complete) {
+        // Desenha o esqueleto com escala ajustada
+        ctxsprite.drawImage(
+            esqueleto.image,
+            esqueleto.width * esqueleto.frame, // Define o frame atual
+            0, // Linha do sprite sheet (primeira linha)
+            esqueleto.width, // Largura do frame
+            esqueleto.height, // Altura do frame
+            esqueleto.position.x, // Posição x no canvas
+            esqueleto.position.y, // Posição y no canvas
+            esqueleto.width * 2.5, // Escala x
+            esqueleto.height * 2.5 // Escala y
+        );
+    }
+}
+
 //--------------------------------------------------------------------------------------------------------------------------------------
 
 
-const movables = [background, ...bordas, foreground, chopper, florist, miner, pig];
+const movables = [background, ...bordas, foreground, chopper, florist, miner, pig, esqueleto];
 
 function rectangularCollision({ rectangle1, rectangle2 }) {
     return (
@@ -504,23 +566,22 @@ function animate() {
     player.draw(); // Desenha o personagem
     foreground.draw()
 
-    //NPCS ABAIXO
-    // Atualiza e desenha o chopper
-    updateChopperAnimation(currentTime);
-    drawChopper();
-    // Atualiza e desenha o florist
-    updateFloristAnimation(currentTime);
-    drawFlorist();
-    // Atualiza e desenha o miner
-    updateMinerAnimation(currentTime);
-    drawMiner();
+     // NPCs e outros elementos
+     updateChopperAnimation(currentTime);
+     drawChopper();
+ 
+     updateFloristAnimation(currentTime);
+     drawFlorist();
+ 
+     updateMinerAnimation(currentTime);
+     drawMiner();
+ 
+     updatePigAnimation(currentTime);
+     drawPig();
 
-    //ANIMAIS ABAIXO
-    // Atualiza e desenha o miner
-    updatePigAnimation(currentTime);
-    drawPig();
-    
-    
+     updateesqueletoAnimation(currentTime);
+     drawesqueleto();
+ 
     let movendo = true;
     player.movendo = false
     // Movimento para cima (w)

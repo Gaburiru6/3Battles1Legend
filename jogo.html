@@ -27,23 +27,20 @@
                 border-color: black;
             }
             #mapa {
-                display: block;
-                position:absolute;
-                z-index: 1; 
-                border: 6px solid ;
-                border-radius: 2rem;
-                border-color: black;
+            position: absolute;
+            z-index: 1;
+            border: 6px solid black; 
+            border-radius: 2rem;
+            box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.8); 
             }
 
             #gameMenuCanvas {
             position: absolute;
             z-index: 10;
-            border: 6px solid black; /* Borda preta simples */
-            border-radius: 2rem; /* Borda arredondada */
-    
-            /* Sombra preta ao redor de toda a borda */
-            box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.8); /* Sombra preta com desfoque e espalhamento */
-        }
+            border: 6px solid black; 
+            border-radius: 2rem; 
+            box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.8); 
+            }
 
 
             #canvassprite{
@@ -70,7 +67,7 @@
                 z-index: 9;
             }
         </style>
-        
+        <img src="Cute_Fantasy_Free/Enemies/Skeleton.png" alt="" srcset="">
         <canvas id="mapa"></canvas>
         <canvas id="canvassprite" width="1240" height="720"></canvas> 
         <canvas id="canvasItens" width="1240" height="720"></canvas> 
