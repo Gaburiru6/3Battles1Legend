@@ -74,7 +74,7 @@ class Sprite {
         if (this.frames.max > 1) {
             this.frames.elapsed++;
             if (this.frames.elapsed % 10 === 0) {
-                if (this.frames.val < this.frames.max - 3) {
+                if (this.frames.val < this.frames.max - 3) {  //O PADRÃO ERA -1 AQUI E 4 FRAMES  NA LINHA 121, MAS FICAVA BUGADO!
                     this.frames.val++;
                 } else {
                     this.frames.val = 0;
