@@ -594,7 +594,7 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 }
 
 let lastTime = 0; // Marca o tempo do último frame
-const maxFPS = 60; // Limite de FPS (30 FPS neste caso)
+const maxFPS = 60; // Limite de FPS (60 FPS neste caso)
 const interval = 1000 / maxFPS; // Intervalo entre cada frame (em ms)
 
 function animate(currentTime) {
