@@ -593,165 +593,150 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
     );
 }
 
-function animate() {
-    const currentTime = performance.now(); // Tempo atual em ms
-    window.requestAnimationFrame(animate); // Chama a função novamente (loop de animação)
-    
-    // Limpa a tela antes de redesenhar tudo
-    ctxsprite.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Desenhar o fundo e bordas
-    background.draw();
-    bordas.forEach(borda => borda.draw());
-    // Se o personagem não estiver atacando, permitir movimentação
-    
+let lastTime = 0; // Marca o tempo do último frame
+const maxFPS = 60; // Limite de FPS (30 FPS neste caso)
+const interval = 1000 / maxFPS; // Intervalo entre cada frame (em ms)
 
-    //NPCS ABAIXO
-    // Atualiza e desenha o chopper
-    updateChopperAnimation(currentTime);
-    drawChopper();
-    // Atualiza e desenha o florist
-    updateFloristAnimation(currentTime);
-    drawFlorist();
-    // Atualiza e desenha o miner
-    updateMinerAnimation(currentTime);
-    drawMiner();
+function animate(currentTime) {
+    // Calcular a diferença de tempo entre o quadro atual e o último
+    const deltaTime = currentTime - lastTime;
 
-    //ANIMAIS ABAIXO
-    // Atualiza e desenha o miner
-    updatePigAnimation(currentTime);
-    drawPig();
-    
-    
-    // Desenhar o personagem
-    player.draw();
-    foreground.draw();
+    // Se a diferença de tempo for maior ou igual ao intervalo entre os quadros, atualize o jogo
+    if (deltaTime >= interval) {
+        lastTime = currentTime - (deltaTime % interval); // Atualiza o tempo do último frame
 
-    let movendo = true;
-    player.movendo = false;
+        // Limpa a tela antes de redesenhar tudo
+        ctxsprite.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Movimento para cima (w)
+        // Desenhar o fundo e bordas
+        background.draw();
+        bordas.forEach(borda => borda.draw());
 
-    const speed = 5; // jogar em consts.js quando criar
-    // Se o personagem não estiver atacando, permitir movimentação
-    if (!player.isAttacking) {
-    if (keys.w.pressed && lastKey === 'w') {
-        player.movendo = true
-        for (let i = 0; i < bordas.length; i++) {
-            const borda = bordas[i];
-            if (
-                rectangularCollision({
-                    rectangle1: player,
-                    rectangle2: {
-                        ...borda,
-                        position: {
-                            x: borda.position.x,
-                            y: borda.position.y + 5 // Tentando mover o personagem para cima
+        // NPCs
+        updateChopperAnimation(currentTime);
+        drawChopper();
+        updateFloristAnimation(currentTime);
+        drawFlorist();
+        updateMinerAnimation(currentTime);
+        drawMiner();
+
+        // Animais
+        updatePigAnimation(currentTime);
+        drawPig();
+
+        // Desenhar o personagem
+        player.draw();
+        foreground.draw();
+
+        let movendo = true;
+        player.movendo = false;
+
+        // Lógica de movimentação do personagem (como já estava implementado)
+        const speed = 5; // velocidade do movimento
+        if (!player.isAttacking) {
+            if (keys.w.pressed && lastKey === 'w') {
+                player.movendo = true;
+                for (let i = 0; i < bordas.length; i++) {
+                    const borda = bordas[i];
+                    if (rectangularCollision({
+                        rectangle1: player,
+                        rectangle2: {
+                            ...borda,
+                            position: {
+                                x: borda.position.x,
+                                y: borda.position.y + 5
+                            }
                         }
+                    })) {
+                        movendo = false;
+                        break;
                     }
-                })
-            ) {
-                movendo = false; // Se houver colisão, impede o movimento
-                break;
-            }
-        }
-
-        if (movendo) {
-            movables.forEach(movable => movable.position.y += speed); // Movimenta para direita
-            player.currentDirection = 160; // Moonwalk correcão
-            player.updateAttackBox(); // Atualiza a posição da área de ataque
-        }
-
-    // Movimento para a esquerda (a)
-    } else if (keys.a.pressed && lastKey === 'a') {
-        player.movendo = true;
-
-        for (let i = 0; i < bordas.length; i++) {
-            const borda = bordas[i];
-            if (
-                rectangularCollision({
-                    rectangle1: player,
-                    rectangle2: {
-                        ...borda,
-                        position: {
-                            x: borda.position.x + 5,
-                            y: borda.position.y
+                }
+                if (movendo) {
+                    movables.forEach(movable => movable.position.y += speed);
+                    player.currentDirection = 160; // direção para cima
+                    player.updateAttackBox(); // Atualiza a área de ataque
+                }
+            } else if (keys.a.pressed && lastKey === 'a') {
+                player.movendo = true;
+                for (let i = 0; i < bordas.length; i++) {
+                    const borda = bordas[i];
+                    if (rectangularCollision({
+                        rectangle1: player,
+                        rectangle2: {
+                            ...borda,
+                            position: {
+                                x: borda.position.x + 5,
+                                y: borda.position.y
+                            }
                         }
+                    })) {
+                        movendo = false;
+                        break;
                     }
-                })
-            ) {
-                movendo = false;
-                break;
-            }
-        }
-
-        if (movendo) {
-            movables.forEach(movable => movable.position.x += speed); // Movimenta para a esquerda
-            player.currentDirection = 127; // Moonwalk correcão
-            player.updateAttackBox(); // Atualiza a posição da área de ataque
-        }
-
-    // Movimento para baixo (s)
-    } else if (keys.s.pressed && lastKey === 's') {
-        player.movendo = true;
-
-        for (let i = 0; i < bordas.length; i++) {
-            const borda = bordas[i];
-            if (
-                rectangularCollision({
-                    rectangle1: player,
-                    rectangle2: {
-                        ...borda,
-                        position: {
-                            x: borda.position.x,
-                            y: borda.position.y - 5 // Tentando mover o personagem para baixo
+                }
+                if (movendo) {
+                    movables.forEach(movable => movable.position.x += speed); // Move para a esquerda
+                    player.currentDirection = 127;
+                    player.updateAttackBox();
+                }
+            } else if (keys.s.pressed && lastKey === 's') {
+                player.movendo = true;
+                for (let i = 0; i < bordas.length; i++) {
+                    const borda = bordas[i];
+                    if (rectangularCollision({
+                        rectangle1: player,
+                        rectangle2: {
+                            ...borda,
+                            position: {
+                                x: borda.position.x,
+                                y: borda.position.y - 5
+                            }
                         }
+                    })) {
+                        movendo = false;
+                        break;
                     }
-                })
-            ) {
-                movendo = false;
-                break;
-            }
-        }
-
-        if (movendo) {
-            movables.forEach(movable => movable.position.y -= speed); // Movimenta para baixo
-            player.currentDirection = 96; // Moonwalk correcão
-            player.updateAttackBox(); // Atualiza a posição da área de ataque
-        }
-
-    // Movimento para a direita (d)
-    } else if (keys.d.pressed && lastKey === 'd') {
-        player.movendo = true;
-
-        for (let i = 0; i < bordas.length; i++) {
-            const borda = bordas[i];
-            if (
-                rectangularCollision({
-                    rectangle1: player,
-                    rectangle2: {
-                        ...borda,
-                        position: {
-                            x: borda.position.x - 5,
-                            y: borda.position.y
+                }
+                if (movendo) {
+                    movables.forEach(movable => movable.position.y -= speed); // Move para baixo
+                    player.currentDirection = 96;
+                    player.updateAttackBox();
+                }
+            } else if (keys.d.pressed && lastKey === 'd') {
+                player.movendo = true;
+                for (let i = 0; i < bordas.length; i++) {
+                    const borda = bordas[i];
+                    if (rectangularCollision({
+                        rectangle1: player,
+                        rectangle2: {
+                            ...borda,
+                            position: {
+                                x: borda.position.x - 5,
+                                y: borda.position.y
+                            }
                         }
+                    })) {
+                        movendo = false;
+                        break;
                     }
-                })
-            ) {
-                movendo = false;
-                break;
+                }
+                if (movendo) {
+                    movables.forEach(movable => movable.position.x -= speed); // Move para a direita
+                    player.currentDirection = 128;
+                    player.updateAttackBox();
+                }
             }
-        }
-
-        if (movendo) {
-            movables.forEach(movable => movable.position.x -= speed); // Movimenta para a direita
-            player.currentDirection = 128; // Moonwalk correcão
-            player.updateAttackBox(); // Atualiza a posição da área de ataque
         }
     }
-    }
+
+    // Solicita o próximo frame, criando o loop de animação
+    window.requestAnimationFrame(animate);
 }
-animate();
+
+// Começa o loop de animação
+window.requestAnimationFrame(animate);
+
 //-------------------------------------------------------------------------------------
 //movimentacao.js
 window.addEventListener('keydown', (event) => {
