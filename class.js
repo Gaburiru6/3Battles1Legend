@@ -50,7 +50,7 @@ class Sprite {
     draw() {
         ctx.save(); // Salva o estado atual do contexto
 
-        if (this.currentDirection === 127 || this.currentDirection === 31) {  // Quando o personagem está indo para a esquerda
+        if (this.currentDirection === 127 || this.currentDirection === 31 || this.currentDirection === 223) {  // Quando o personagem está indo para a esquerda
             ctx.scale(-1, 1); // Espelha horizontalmente
             ctx.translate(-this.position.x * 2 - this.width, 0); // Ajusta a posição
         }
@@ -74,7 +74,7 @@ class Sprite {
         if (this.frames.max > 1) {
             this.frames.elapsed++;
             if (this.frames.elapsed % 10 === 0) {
-                if (this.frames.val < this.frames.max - 1) {
+                if (this.frames.val < this.frames.max - 3) {
                     this.frames.val++;
                 } else {
                     this.frames.val = 0;
@@ -93,19 +93,41 @@ class Sprite {
         }
     }
     attack() {
-        const now = performance.now(); // Tempo atual
-        if (this.isAttacking || now - lastAttackTime < 500) return; // Bloqueia ataque em cooldown
-
-        this.isAttacking = true;
-        lastAttackTime = now; // Atualiza o momento do ataque
-        this.updateAttackBox();
-
-        console.log('Ataque iniciado:', this.attackBox.position);
-
+        if (this.isAttacking) return; // Evita múltiplos ataques simultâneos
+    
+        this.isAttacking = true; // Define estado de ataque
+        this.frames.val = 0; // Reseta animação para o primeiro quadro
+    
+        // Atualizar `currentDirection` para a linha correspondente à animação de ataque
+        switch (this.currentDirection) {
+            case 0: // Para baixo
+            case 96:
+                this.currentDirection = 192; // Linha da animação de ataque para baixo
+                break;
+            case 31: // Parado para a esquerda
+            case 127: // Movendo para a esquerda
+                this.currentDirection = 223; // Linha da animação de ataque para a esquerda
+                break;
+            case 32: // Parado para a direita
+            case 128: // Movendo para a direita
+                this.currentDirection = 224; // Linha da animação de ataque para a direita
+                break;
+            case 64: // Parado para cima
+            case 160: // Movendo para cima
+                this.currentDirection = 256; // Linha da animação de ataque para cima
+                break;
+        }
+    
+        this.frames.max = 6; // Número de quadros na animação de ataque
+    
+        // Finalizar o ataque após a duração da animação
         setTimeout(() => {
-            this.isAttacking = false; // Termina o ataque após 500ms
-        }, 500);
+            this.isAttacking = false; // Encerra estado de ataque
+            this.frames.val = 0; // Reseta o quadro da animação
+            this.updateIdleState(); // Retorna ao estado idle
+        }, 500); // Duração do ataque
     }
+    
     updateAttackBox() {
         // Atualizar a posição da área de ataque com base na direção atual
         switch (this.currentDirection) {
@@ -132,7 +154,26 @@ class Sprite {
                 break;
         }
     }
+    // Função para retornar ao estado idle após ataque
+    updateIdleState() {
+        switch (this.currentDirection) {
+            case 192: // Após ataque para baixo
+                this.currentDirection = 0; // Parado para baixo
+                break;
+            case 223: // Após ataque para a esquerda
+                this.currentDirection = 31; // Parado para a esquerda
+                break;
+            case 224: // Após ataque para a direita
+                this.currentDirection = 32; // Parado para a direita
+                break;
+            case 256: // Após ataque para cima
+                this.currentDirection = 64; // Parado para cima
+                break;
+        }
+        this.frames.max = 6; // Número de quadros na animação idle
+    }
 }
+
 
 //-------------------------------------------------------------------------------------------
 //mapa_colisao.js
@@ -713,53 +754,51 @@ animate();
 window.addEventListener('keydown', (event) => {
     switch (event.key) {
         case ' ': // Barra de espaço para atacar
-            if (!player.isAttacking) { // Evitar ataques múltiplos simultâneos
-                player.isAttacking = true; // Ativar estado de ataque
-                player.movendo = false; // Parar o movimento
-                player.frames.val = 0; // Resetar a animação
-                player.updateAttackBox(); // Atualizar posição do bloco de ataque
-                
-                console.log('Ataque iniciado:', player.attackBox); // Log da área de ataque
-
-                setTimeout(() => {
-                    player.isAttacking = false; // Finalizar ataque após a animação
-                    console.log('Ataque concluído');
-                }, 500); // Duração do ataque em milissegundos
-            }
-            break;
+            player.attack(); // Chama a função de ataque
+            break;    
         case 'w':
-            keys.w.pressed = true;
-            lastKey = 'w';
-            player.currentDirection = 160; // Andar para cima
-            player.movendo = true;
-            break;
+            if (!player.isAttacking) {
+                keys.w.pressed = true;
+                lastKey = 'w';
+                player.currentDirection = 160; // Andar para cima
+                player.movendo = true;
+                break;
+            }
         case 'a':
-            keys.a.pressed = true;
-            lastKey = 'a';
-            player.currentDirection = 127; // Andar para a esquerda
-            player.movendo = true;
-            break;
+            if (!player.isAttacking) {
+                keys.a.pressed = true;
+                lastKey = 'a';
+                player.currentDirection = 127; // Andar para a esquerda
+                player.movendo = true;
+                break;
+            }
         case 's':
-            keys.s.pressed = true;
-            lastKey = 's';
-            player.currentDirection = 96; // Andar para baixo
-            player.movendo = true;
-            break;
+            if (!player.isAttacking) {
+                keys.s.pressed = true;
+                lastKey = 's';
+                player.currentDirection = 96; // Andar para baixo
+                player.movendo = true;
+                break;
+            }
         case 'd':
-            keys.d.pressed = true;
-            lastKey = 'd';
-            player.currentDirection = 128; // Andar para a direita
-            player.movendo = true;
-            break;
+            if (!player.isAttacking) {
+                keys.d.pressed = true;
+                lastKey = 'd';
+                player.currentDirection = 128; // Andar para a direita
+                player.movendo = true;
+                break;
+            }
     }
 });
 
 window.addEventListener('keyup', (event) => {
     if (keys[event.key]) keys[event.key].pressed = false;
-    player.movendo = false;
+    if (!player.isAttacking) {
+        player.movendo = false;
 
-    if (event.key === 'w') player.currentDirection = 64;  // Parado para cima
-    if (event.key === 'a') player.currentDirection = 31; // Parado para a esquerda
-    if (event.key === 's') player.currentDirection = 0;  // Parado para baixo
-    if (event.key === 'd') player.currentDirection = 32;  // Parado para a direita
+        if (event.key === 'w') player.currentDirection = 64;  // Parado para cima
+        if (event.key === 'a') player.currentDirection = 31; // Parado para a esquerda
+        if (event.key === 's') player.currentDirection = 0;  // Parado para baixo
+        if (event.key === 'd') player.currentDirection = 32;  // Parado para a direita
+    }
 });
