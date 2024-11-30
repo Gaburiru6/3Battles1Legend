@@ -597,6 +597,10 @@ let lastTime = 0; // Marca o tempo do último frame
 const maxFPS = 60; // Limite de FPS (60 FPS neste caso)
 const interval = 1000 / maxFPS; // Intervalo entre cada frame (em ms)
 
+const walkSound = document.getElementById('walkSound');
+let isPlaying = false; // Indica se o som está tocando
+walkSound.playbackRate = 1.5; // Velocidade do áudio
+
 function animate(currentTime) {
     // Calcular a diferença de tempo entre o quadro atual e o último
     const deltaTime = currentTime - lastTime;
@@ -727,6 +731,15 @@ function animate(currentTime) {
                     player.updateAttackBox();
                 }
             }
+        }
+        // Controle do som de movimento
+        if (player.movendo && !isPlaying) {
+            walkSound.play(); // Toca o som de movimento
+            isPlaying = true; // Define que o som está tocando
+        } else if (!player.movendo && isPlaying) {
+            walkSound.pause(); // Pausa o som de movimento
+            walkSound.currentTime = 0; // Reinicia o som
+            isPlaying = false; // Define que o som não está mais tocando
         }
     }
 
