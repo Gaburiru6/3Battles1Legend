@@ -189,9 +189,9 @@ const colisao = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
@@ -401,8 +401,8 @@ const florist = {
     animationSpeed: 2500, // Velocidade da animação (em ms)
     lastFrameTime: 0, // Marca o tempo do último frame
     position: {
-        x: (canvas.width / 2) + 550, // Posição inicial x
-        y: (canvas.height / 2) - 540 // Posição inicial y
+        x: (canvas.width / 2) + 447, // Posição inicial x
+        y: (canvas.height / 2) - 460 // Posição inicial y
     }
 };
 
@@ -580,9 +580,113 @@ function drawPig() {
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------
+//Dialogos npc
+
+var dialogueflorist = new Boolean(false);
+var dialoguechopper = new Boolean(false);
+var dialogueminer = new Boolean(false);
+function PositionDialogueFlorist(){
+    let fx = florist.position.x;
+    let fy = florist.position.y;
+    if(fx >=520 && fx <= 660 && fy >=240 && fy <= 300){
+        dialogueflorist = true;
+    }else{
+        dialogueflorist = false;
+    }
+}
+posiçãointerval = setInterval(PositionDialogueFlorist, 1000);
+
+function PositionDialogueChopper(){
+    let cx = chopper.position.x;
+    let cy = chopper.position.y;
+    if(cx >=465 && cx <= 612 && cy >=270 && cy <= 385){
+        dialoguechopper = true;
+    }else{
+        dialoguechopper = false;
+    }
+}
+posiçãointerval = setInterval(PositionDialogueChopper, 1000);
+
+function PositionDialogueminer(){
+    let mx = miner.position.x;
+    let my = miner.position.y;
+    if(mx >=500 && mx <= 615 && my >=260 && my <= 360){
+        dialogueminer = true;
+    }else{
+        dialogueminer = false;
+    }
+}
+posiçãointerval = setInterval(PositionDialogueminer, 1000);
+
+//----------------------------------------------------------------------------------------------------------------
+
+//Esqueleto
+
+// Definição do objeto esqueleto
+const esqueleto = {
+    image: new Image(),
+    width: 0,
+    height: 0,
+    frame: 0, // Frame atual (0 ou 1)
+    animationSpeed: 300, // Velocidade da animação (em ms)
+    lastFrameTime: 0, // Marca o tempo do último frame
+    position: {
+        x: (canvas.width / 2) - 60, // Posição inicial x
+        y: (canvas.height / 2) - 100 // Posição inicial y
+    }
+};
+
+// Carregamento da imagem do esqueleto
+esqueleto.image.src = "Cute_Fantasy_Free/Enemies/Skeleton.png";
+esqueleto.image.onload = () => {
+    esqueleto.width = esqueleto.image.width / 17; // Largura de cada frame
+    esqueleto.height = esqueleto.image.height / 9; // Altura de cada frame
+};
+
+// Função para limpar a área ocupada pelo esqueleto
+function clearesqueleto() {
+    ctxsprite.clearRect(
+        esqueleto.position.x - 1, // Margem para evitar sobras
+        esqueleto.position.y - 1,
+        esqueleto.width * 2 + 2, // Limpeza proporcional ao tamanho do sprite
+        esqueleto.height * 2 + 2
+    );
+}
+
+// Função para atualizar a animação do esqueleto
+function updateEsqueletoAnimation(currentTime) {
+    if (currentTime - esqueleto.lastFrameTime >= esqueleto.animationSpeed) {
+        esqueleto.frame = (esqueleto.frame + 1) % 2; // Alterna entre os frames 0 e 1
+        esqueleto.lastFrameTime = currentTime; // Atualiza o tempo do último frame
+    }
+}
+
+// Função para desenhar o esqueleto
+function drawEsqueleto() {
+    // Limpa a área antes de desenhar
+    clearesqueleto();
+
+    if (esqueleto.image.complete) {
+        // Desenha o esqueleto com escala ajustada
+        ctxsprite.drawImage(
+            esqueleto.image,
+            esqueleto.width * esqueleto.frame, // Define o frame atual
+            0, // Linha do sprite sheet (primeira linha)
+            esqueleto.width, // Largura do frame
+            esqueleto.height, // Altura do frame
+            esqueleto.position.x, // Posição x no canvas
+            esqueleto.position.y, // Posição y no canvas
+            esqueleto.width * 2.5, // Escala x
+            esqueleto.height * 2.5 // Escala y
+        );
+    }
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------
 
 
-const movables = [background, ...bordas, foreground, chopper, florist, miner, pig];
+
+const movables = [background, ...bordas, foreground, chopper, florist, miner, pig, esqueleto];
 
 function rectangularCollision({ rectangle1, rectangle2 }) {
     return (
@@ -627,6 +731,10 @@ function animate(currentTime) {
         // Animais
         updatePigAnimation(currentTime);
         drawPig();
+
+        // Monstros
+        updateEsqueletoAnimation(currentTime);
+        drawEsqueleto();
 
         // Desenhar o personagem
         player.draw();
