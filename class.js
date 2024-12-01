@@ -50,7 +50,7 @@ class Sprite {
     draw() {
         ctx.save(); // Salva o estado atual do contexto
 
-        if (this.currentDirection === 127 || this.currentDirection === 31 || this.currentDirection === 223) {  // Quando o personagem está indo para a esquerda
+        if (this.currentDirection === 127 || this.currentDirection === 31 || this.currentDirection === 226) {  // Quando o personagem está indo para a esquerda
             ctx.scale(-1, 1); // Espelha horizontalmente
             ctx.translate(-this.position.x * 2 - this.width, 0); // Ajusta a posição
         }
@@ -109,11 +109,11 @@ class Sprite {
                 break;
             case 31: // Parado para a esquerda
             case 127: // Movendo para a esquerda
-                this.currentDirection = 223; // Linha da animação de ataque para a esquerda
+                this.currentDirection = 226; // Linha da animação de ataque para a esquerda
                 break;
             case 32: // Parado para a direita
             case 128: // Movendo para a direita
-                this.currentDirection = 224; // Linha da animação de ataque para a direita
+                this.currentDirection = 225; // Linha da animação de ataque para a direita
                 break;
             case 64: // Parado para cima
             case 160: // Movendo para cima
@@ -163,10 +163,10 @@ class Sprite {
             case 192: // Após ataque para baixo
                 this.currentDirection = 0; // Parado para baixo
                 break;
-            case 223: // Após ataque para a esquerda
+            case 226: // Após ataque para a esquerda
                 this.currentDirection = 31; // Parado para a esquerda
                 break;
-            case 224: // Após ataque para a direita
+            case 225: // Após ataque para a direita
                 this.currentDirection = 32; // Parado para a direita
                 break;
             case 256: // Após ataque para cima
