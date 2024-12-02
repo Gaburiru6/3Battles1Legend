@@ -19,6 +19,9 @@ class Borda {
     }
 }
 
+let lastAttackTime = 0; // Marca o último momento do ataque
+const attackCooldown = 500; // Tempo de cooldown do ataque em milissegundos
+
 class Sprite {
     constructor({ position, velocity, map, frames = { max: 1 }, lines = { line: 1 }, scale = 1 }) {
         this.position = position;
@@ -33,12 +36,21 @@ class Sprite {
         };
         this.movendo = false;
         this.currentDirection = 0; // Posição inicial(EIXO Y) (parado para baixo, nesse caso)
+        this.isAttacking = false; // Novo estado de ataque
+        this.attackBox = {
+            position: {
+                x: this.position.x,
+                y: this.position.y
+            },
+            width: 50, // Largura da área de ataque
+            height: 50 // Altura da área de ataque
+        };
     }
 
     draw() {
         ctx.save(); // Salva o estado atual do contexto
 
-        if (this.currentDirection === 127 || this.currentDirection === 31) {  // Quando o personagem está indo para a esquerda
+        if (this.currentDirection === 127 || this.currentDirection === 31 || this.currentDirection === 226) {  // Quando o personagem está indo para a esquerda
             ctx.scale(-1, 1); // Espelha horizontalmente
             ctx.translate(-this.position.x * 2 - this.width, 0); // Ajusta a posição
         }
@@ -61,18 +73,107 @@ class Sprite {
         // Lógica para animação
         if (this.frames.max > 1) {
             this.frames.elapsed++;
+            if (this.frames.elapsed % 10 === 0) {
+                if (this.frames.val < this.frames.max - 3) {  //O PADRÃO ERA -1 AQUI E 4 FRAMES  NA LINHA 121, MAS FICAVA BUGADO!
+                    this.frames.val++;
+                } else {
+                    this.frames.val = 0;
+                }
+            }
         }
-        if (this.frames.max > 1) {
-    this.frames.elapsed++;
-    if (this.frames.elapsed % 10 === 0) {
-        if (this.frames.val < this.frames.max - 1) {
-            this.frames.val++;
-        } else {
-            this.frames.val = 0; // Voltar ao primeiro frame quando a animação terminar
+        // Desenhar a área de ataque (bloco invisível)
+        if (this.isAttacking) {
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Vermelho semitransparente
+            ctx.fillRect(
+                this.attackBox.position.x,
+                this.attackBox.position.y,
+                this.attackBox.width,
+                this.attackBox.height
+            );
         }
     }
-}
+    attack() {
+        if (this.isAttacking) return; // Evita múltiplos ataques simultâneos
+    
+        this.isAttacking = true; // Define estado de ataque
+        this.frames.val = 0; // Reseta animação para o primeiro quadro
 
+        // Tocar som de ataque
+        playAttackSound()
+    
+        // Atualizar `currentDirection` para a linha correspondente à animação de ataque
+        switch (this.currentDirection) {
+            case 0: // Para baixo
+            case 96:
+                this.currentDirection = 192; // Linha da animação de ataque para baixo
+                break;
+            case 31: // Parado para a esquerda
+            case 127: // Movendo para a esquerda
+                this.currentDirection = 226; // Linha da animação de ataque para a esquerda
+                break;
+            case 32: // Parado para a direita
+            case 128: // Movendo para a direita
+                this.currentDirection = 225; // Linha da animação de ataque para a direita
+                break;
+            case 64: // Parado para cima
+            case 160: // Movendo para cima
+                this.currentDirection = 256; // Linha da animação de ataque para cima
+                break;
+        }
+    
+        this.frames.max = 6; // Número de quadros na animação de ataque
+    
+        // Finalizar o ataque após a duração da animação
+        setTimeout(() => {
+            this.isAttacking = false; // Encerra estado de ataque
+            this.frames.val = 0; // Reseta o quadro da animação
+            this.updateIdleState(); // Retorna ao estado idle
+        }, 500); // Duração do ataque
+    }
+    
+    updateAttackBox() {
+        // Atualizar a posição da área de ataque com base na direção atual
+        switch (this.currentDirection) {
+            case 0:
+            case 96: // Para baixo
+                this.attackBox.position.x = this.position.x;
+                this.attackBox.position.y = this.position.y + this.height;
+                break;
+            case 31:
+            case 127: // Para a esquerda
+                this.attackBox.position.x = this.position.x - this.attackBox.width;
+                this.attackBox.position.y = this.position.y;
+                break;
+            case 32:
+            case 128: // Para a direita
+                this.attackBox.position.x = this.position.x + this.width;
+                this.attackBox.position.y = this.position.y;
+                break;
+
+            case 64:
+            case 160: // Para cima
+                this.attackBox.position.x = this.position.x;
+                this.attackBox.position.y = this.position.y - this.attackBox.height;
+                break;
+        }
+    }
+    // Função para retornar ao estado idle após ataque
+    updateIdleState() {
+        switch (this.currentDirection) {
+            case 192: // Após ataque para baixo
+                this.currentDirection = 0; // Parado para baixo
+                break;
+            case 226: // Após ataque para a esquerda
+                this.currentDirection = 31; // Parado para a esquerda
+                break;
+            case 225: // Após ataque para a direita
+                this.currentDirection = 32; // Parado para a direita
+                break;
+            case 256: // Após ataque para cima
+                this.currentDirection = 64; // Parado para cima
+                break;
+        }
+        this.frames.max = 6; // Número de quadros na animação idle
     }
 }
 
@@ -589,189 +690,240 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
     );
 }
 
-function animate() {
-    const currentTime = performance.now(); // Tempo atual em ms
-    window.requestAnimationFrame(animate); // Chama a função novamente (loop de animação)
-    // Limpa a tela antes de redesenhar tudo
-    ctxsprite.clearRect(0, 0, canvas.width, canvas.height);
-    background.draw(); // Desenha o fundo
-    bordas.forEach(borda => {
-        borda.draw();
-    });
+let lastTime = 0; // Marca o tempo do último frame
+const maxFPS = 60; // Limite de FPS (60 FPS neste caso)
+const interval = 1000 / maxFPS; // Intervalo entre cada frame (em ms)
 
-    player.draw(); // Desenha o personagem
-    foreground.draw()
+const walkSound = document.getElementById('walkSound');
+let isPlaying = false; // Indica se o som está tocando
+walkSound.playbackRate = 1.5; // Velocidade do áudio
 
-     // NPCs e outros elementos
-     updateChopperAnimation(currentTime);
-     drawChopper();
- 
-     updateFloristAnimation(currentTime);
-     drawFlorist();
- 
-     updateMinerAnimation(currentTime);
-     drawMiner();
- 
-     updatePigAnimation(currentTime);
-     drawPig();
+function animate(currentTime) {
+    // Calcular a diferença de tempo entre o quadro atual e o último
+    const deltaTime = currentTime - lastTime;
 
-     updateesqueletoAnimation(currentTime);
-     drawesqueleto();
- 
-    let movendo = true;
-    player.movendo = false
-    // Movimento para cima (w)
+    // Se a diferença de tempo for maior ou igual ao intervalo entre os quadros, atualize o jogo
+    if (deltaTime >= interval) {
+        lastTime = currentTime - (deltaTime % interval); // Atualiza o tempo do último frame
 
-    const speed = 5; // jogar em consts.js quando criar
-    if (keys.w.pressed && lastKey === 'w') {
-        player.movendo = true
-        for (let i = 0; i < bordas.length; i++) {
-            const borda = bordas[i];
-            if (
-                rectangularCollision({
-                    rectangle1: player,
-                    rectangle2: {
-                        ...borda,
-                        position: {
-                            x: borda.position.x,
-                            y: borda.position.y + 5 // Tentando mover o personagem para cima
-                        }
+        // Limpa a tela antes de redesenhar tudo
+        ctxsprite.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Desenhar o fundo e bordas
+        background.draw();
+        bordas.forEach(borda => borda.draw());
+
+        // NPCs e outros elementos
+        updateChopperAnimation(currentTime);
+        drawChopper();
+    
+        updateFloristAnimation(currentTime);
+        drawFlorist();
+    
+        updateMinerAnimation(currentTime);
+        drawMiner();
+
+        // Animais
+        updatePigAnimation(currentTime);
+        drawPig();
+
+        // Monstros
+        updateesqueletoAnimation(currentTime);
+        drawesqueleto();
+
+        // Desenhar o personagem
+        player.draw();
+        foreground.draw();
+    
+        let movendo = true;
+        player.movendo = false
+        // Movimento para cima (w)
+
+        // Lógica de movimentação do personagem
+        const speed = 5; // velocidade de movimento
+        if (!player.isAttacking) {
+            if (keys.w.pressed && lastKey === 'w') {
+                player.movendo = true
+                for (let i = 0; i < bordas.length; i++) {
+                    const borda = bordas[i];
+                    if (
+                        rectangularCollision({
+                            rectangle1: player,
+                            rectangle2: {
+                                ...borda,
+                                position: {
+                                    x: borda.position.x,
+                                    y: borda.position.y + 5 // Tentando mover o personagem para cima
+                                }
+                            }
+                        })
+                    ) {
+                        movendo = false; // Se houver colisão, impede o movimento
+                        break;
                     }
-                })
-            ) {
-                movendo = false; // Se houver colisão, impede o movimento
-                break;
+                }
+
+                if (movendo) {
+                    movables.forEach(movable => movable.position.y += speed); // Movimenta para direita
+                    player.currentDirection = 160; // Moonwalk correcão
+                    player.updateAttackBox(); // Atualiza a área de ataque
+                }
+
+            // Movimento para a esquerda (a)
+            } else if (keys.a.pressed && lastKey === 'a') {
+                player.movendo = true;
+
+                for (let i = 0; i < bordas.length; i++) {
+                    const borda = bordas[i];
+                    if (
+                        rectangularCollision({
+                            rectangle1: player,
+                            rectangle2: {
+                                ...borda,
+                                position: {
+                                    x: borda.position.x + 5,
+                                    y: borda.position.y
+                                }
+                            }
+                        })
+                    ) {
+                        movendo = false;
+                        break;
+                    }
+                }
+
+                if (movendo) {
+                    movables.forEach(movable => movable.position.x += speed); // Movimenta para a esquerda
+                    player.currentDirection = 127; // Moonwalk correcão
+                    player.updateAttackBox(); // Atualiza a área de ataque
+                }
+
+            // Movimento para baixo (s)
+            } else if (keys.s.pressed && lastKey === 's') {
+                player.movendo = true;
+
+                for (let i = 0; i < bordas.length; i++) {
+                    const borda = bordas[i];
+                    if (
+                        rectangularCollision({
+                            rectangle1: player,
+                            rectangle2: {
+                                ...borda,
+                                position: {
+                                    x: borda.position.x,
+                                    y: borda.position.y - 5 // Tentando mover o personagem para baixo
+                                }
+                            }
+                        })
+                    ) {
+                        movendo = false;
+                        break;
+                    }
+                }
+
+                if (movendo) {
+                    movables.forEach(movable => movable.position.y -= speed); // Movimenta para baixo
+                    player.currentDirection = 96; // Moonwalk correcão
+                    player.updateAttackBox(); // Atualiza a área de ataque
+                }
+
+            // Movimento para a direita (d)
+            } else if (keys.d.pressed && lastKey === 'd') {
+                player.movendo = true;
+
+                for (let i = 0; i < bordas.length; i++) {
+                    const borda = bordas[i];
+                    if (
+                        rectangularCollision({
+                            rectangle1: player,
+                            rectangle2: {
+                                ...borda,
+                                position: {
+                                    x: borda.position.x - 5,
+                                    y: borda.position.y
+                                }
+                            }
+                        })
+                    ) {
+                        movendo = false;
+                        break;
+                    }
+                }
+
+                if (movendo) {
+                    movables.forEach(movable => movable.position.x -= speed); // Movimenta para a direita
+                    player.currentDirection = 128; // Moonwalk correcão
+                    player.updateAttackBox(); // Atualiza a área de ataque
+                }
             }
         }
-
-        if (movendo) {
-            movables.forEach(movable => movable.position.y += speed); // Movimenta para direita
-            player.currentDirection = 160; // Moonwalk correcão
-        }
-
-    // Movimento para a esquerda (a)
-    } else if (keys.a.pressed && lastKey === 'a') {
-        player.movendo = true;
-
-        for (let i = 0; i < bordas.length; i++) {
-            const borda = bordas[i];
-            if (
-                rectangularCollision({
-                    rectangle1: player,
-                    rectangle2: {
-                        ...borda,
-                        position: {
-                            x: borda.position.x + 5,
-                            y: borda.position.y
-                        }
-                    }
-                })
-            ) {
-                movendo = false;
-                break;
-            }
-        }
-
-        if (movendo) {
-            movables.forEach(movable => movable.position.x += speed); // Movimenta para a esquerda
-            player.currentDirection = 127; // Moonwalk correcão
-        }
-
-    // Movimento para baixo (s)
-    } else if (keys.s.pressed && lastKey === 's') {
-        player.movendo = true;
-
-        for (let i = 0; i < bordas.length; i++) {
-            const borda = bordas[i];
-            if (
-                rectangularCollision({
-                    rectangle1: player,
-                    rectangle2: {
-                        ...borda,
-                        position: {
-                            x: borda.position.x,
-                            y: borda.position.y - 5 // Tentando mover o personagem para baixo
-                        }
-                    }
-                })
-            ) {
-                movendo = false;
-                break;
-            }
-        }
-
-        if (movendo) {
-            movables.forEach(movable => movable.position.y -= speed); // Movimenta para baixo
-            player.currentDirection = 96; // Moonwalk correcão
-        }
-
-    // Movimento para a direita (d)
-    } else if (keys.d.pressed && lastKey === 'd') {
-        player.movendo = true;
-
-        for (let i = 0; i < bordas.length; i++) {
-            const borda = bordas[i];
-            if (
-                rectangularCollision({
-                    rectangle1: player,
-                    rectangle2: {
-                        ...borda,
-                        position: {
-                            x: borda.position.x - 5,
-                            y: borda.position.y
-                        }
-                    }
-                })
-            ) {
-                movendo = false;
-                break;
-            }
-        }
-
-        if (movendo) {
-            movables.forEach(movable => movable.position.x -= speed); // Movimenta para a direita
-            player.currentDirection = 128; // Moonwalk correcão
+        // Controle do som de movimento
+        if (player.movendo && !isPlaying) {
+            walkSound.play(); // Toca o som de movimento
+            isPlaying = true; // Define que o som está tocando
+        } else if (!player.movendo && isPlaying) {
+            walkSound.pause(); // Pausa o som de movimento
+            walkSound.currentTime = 0; // Reinicia o som
+            isPlaying = false; // Define que o som não está mais tocando
         }
     }
+
+    // Solicita o próximo frame, criando o loop de animação
+    window.requestAnimationFrame(animate);
 }
-animate();
+
+// Começa o loop de animação
+window.requestAnimationFrame(animate);
 //-------------------------------------------------------------------------------------
 //movimentacao.js
 window.addEventListener('keydown', (event) => {
     switch (event.key) {
+        case ' ': // Barra de espaço para atacar
+            player.attack(); // Chama a função de ataque
+            break;  
         case 'w':
-            keys.w.pressed = true;
-            lastKey = 'w';
-            player.currentDirection = 160; // Andar para cima
-            player.movendo = true;
-            break;
+            if (!player.isAttacking) {
+                keys.w.pressed = true;
+                lastKey = 'w';
+                player.currentDirection = 160; // Andar para cima
+                player.movendo = true;
+                break;
+            }
         case 'a':
-            keys.a.pressed = true;
-            lastKey = 'a';
-            player.currentDirection = 127; // Andar para a esquerda
-            player.movendo = true;
-            break;
+            if (!player.isAttacking) {
+                keys.a.pressed = true;
+                lastKey = 'a';
+                player.currentDirection = 127; // Andar para a esquerda
+                player.movendo = true;
+                break;
+            }
         case 's':
-            keys.s.pressed = true;
-            lastKey = 's';
-            player.currentDirection = 96; // Andar para baixo
-            player.movendo = true;
-            break;
+            if (!player.isAttacking) {
+                keys.s.pressed = true;
+                lastKey = 's';
+                player.currentDirection = 96; // Andar para baixo
+                player.movendo = true;
+                break;
+            } 
         case 'd':
-            keys.d.pressed = true;
-            lastKey = 'd';
-            player.currentDirection = 128; // Andar para a direita
-            player.movendo = true;
-            break;
+            if (!player.isAttacking) {
+                keys.d.pressed = true;
+                lastKey = 'd';
+                player.currentDirection = 128; // Andar para a direita
+                player.movendo = true;
+                break;
+            }
     }
 });
 
 window.addEventListener('keyup', (event) => {
-    keys[event.key].pressed = false;
-    player.movendo = false;
+    if (keys[event.key]) keys[event.key].pressed = false;
+    if (!player.isAttacking) {
+        player.movendo = false;
 
-    if (event.key === 'w') player.currentDirection = 64;  // Parado para cima
-    if (event.key === 'a') player.currentDirection = 31; // Parado para a esquerda
-    if (event.key === 's') player.currentDirection = 0;  // Parado para baixo
-    if (event.key === 'd') player.currentDirection = 32;  // Parado para a direita
+        if (event.key === 'w') player.currentDirection = 64;  // Parado para cima
+        if (event.key === 'a') player.currentDirection = 31; // Parado para a esquerda
+        if (event.key === 's') player.currentDirection = 0;  // Parado para baixo
+        if (event.key === 'd') player.currentDirection = 32;  // Parado para a direita
+    }
 });
