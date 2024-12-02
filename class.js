@@ -615,26 +615,34 @@ function PositionDialogueminer(){
 }
 posiçãointerval = setInterval(PositionDialogueminer, 1000);
 //esqueleto----------------------------------------------------------------------------------------------------------------
-
 // Definição do objeto esqueleto
 const esqueleto = {
     image: new Image(),
-    width: 0,
-    height: 0,
-    frame: 0, // Frame atual (0 ou 1)
-    animationSpeed: 300, // Velocidade da animação (em ms)
-    lastFrameTime: 0, // Marca o tempo do último frame
+    width: 13,
+    height: 20,
+    frame: 0, 
+    animationSpeed: 300, 
+    lastFrameTime: 0,
     position: {
-        x: (canvas.width / 2) - 60, // Posição inicial x
-        y: (canvas.height / 2) - 100 // Posição inicial y
-    }
+        x: (canvas.width / 2) - 60, 
+        y: (canvas.height / 2) - 100
+    },
+    targetPosition: {
+        x: 0,
+        y: 0
+    },
+    velocity: {
+        x: 0,
+        y: 0
+    },
+    direction: 'down', // Direção inicial do esqueleto
 };
 
 // Carregamento da imagem do esqueleto
 esqueleto.image.src = "Cute_Fantasy_Free/Enemies/Skeleton.png";
 esqueleto.image.onload = () => {
-    esqueleto.width = esqueleto.image.width / 17; // Largura de cada frame
-    esqueleto.height = esqueleto.image.height / 9; // Altura de cada frame
+    esqueleto.width = esqueleto.image.width / 6; // Largura de cada frame
+    esqueleto.height = esqueleto.image.height / 10; // Altura de cada frame
 };
 
 // Função para limpar a área ocupada pelo esqueleto
@@ -655,26 +663,165 @@ function updateesqueletoAnimation(currentTime) {
     }
 }
 
-// Função para desenhar o esqueleto
+// Função para verificar a distância entre a posição atual e a nova posição
+function isFarEnough(newX, newY) {
+    const distance = Math.sqrt(
+        Math.pow(newX - esqueleto.position.x, 2) + Math.pow(newY - esqueleto.position.y, 2)
+    );
+    return distance > 50; // A distância mínima entre a nova posição e a posição atual (ajuste conforme necessário)
+}
+
+// Função para gerar uma nova posição aleatória
+function generateNewPosition() {
+    let newX, newY;
+
+    do {
+        // Gera uma nova posição aleatória dentro dos limites do canvas
+        newX = Math.floor(Math.random() * (canvas.width - 200)); 
+        newY = Math.floor(Math.random() * (canvas.height - 200));
+    } while (!isFarEnough(newX, newY)); // Verifica se a nova posição é suficientemente distante
+
+    esqueleto.targetPosition.x = newX;
+    esqueleto.targetPosition.y = newY;
+}
+
+// Função para mover o esqueleto em direção à nova posição
+function moveesqueletoToTarget() {
+    const speed = 2; // Velocidade do movimento
+
+    // Calcular a diferença entre a posição atual e a posição alvo
+    const dx = esqueleto.targetPosition.x - esqueleto.position.x;
+    const dy = esqueleto.targetPosition.y - esqueleto.position.y;
+
+    // Verifica a distância euclidiana
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const threshold = 5; // Distância mínima para considerar que o esqueleto chegou ao alvo
+
+    // Se a distância for menor que o limiar, o esqueleto já está no alvo
+    if (distance < threshold) {
+        // Garante que a velocidade é zero e que o esqueleto não se move mais
+        esqueleto.velocity.x = 0;
+        esqueleto.velocity.y = 0;
+        return; // Sai da função sem fazer mais nada
+    }
+
+    //Tentativa falha de tentar fazer ele não se mover na diagonal:-------------------------------------
+    // Caso contrário, move o esqueleto na direção mais próxima
+    if (Math.abs(dx) > Math.abs(dy)) { // Se a distância horizontal for maior
+        esqueleto.velocity.x = dx > 0 ? speed : -speed;
+        esqueleto.velocity.y = 0; // Zera o movimento vertical
+        esqueleto.direction = dx > 0 ? 'right' : 'left'; // Definir a direção horizontal
+    } else { // Se a distância vertical for maior
+        esqueleto.velocity.x = 0; // Zera o movimento horizontal
+        esqueleto.velocity.y = dy > 0 ? speed : -speed;
+        esqueleto.direction = dy > 0 ? 'down' : 'up'; // Definir a direção vertical
+    }
+    //-------------------------------------------------------------------------------------------------
+
+    // Atualiza a posição do esqueleto com base na direção
+    esqueleto.position.x += esqueleto.velocity.x;
+    esqueleto.position.y += esqueleto.velocity.y;
+}
+
+
+// Função para desenhar o esqueleto com base na direção
 function drawesqueleto() {
-    // Limpa a área antes de desenhar
     clearesqueleto();
 
     if (esqueleto.image.complete) {
-        // Desenha o esqueleto com escala ajustada
-        ctxsprite.drawImage(
-            esqueleto.image,
-            esqueleto.width * esqueleto.frame, // Define o frame atual
-            0, // Linha do sprite sheet (primeira linha)
-            esqueleto.width, // Largura do frame
-            esqueleto.height, // Altura do frame
-            esqueleto.position.x, // Posição x no canvas
-            esqueleto.position.y, // Posição y no canvas
-            esqueleto.width * 2.5, // Escala x
-            esqueleto.height * 2.5 // Escala y
-        );
+        let spriteRow = 0; // Linha do sprite sheet que será usada
+        
+        // Verifica se o esqueleto está parado ou se movendo
+        if (esqueleto.velocity.x === 0 && esqueleto.velocity.y === 0) {
+            // Se o esqueleto não está se movendo, usa a animação de ocioso
+            switch (esqueleto.direction) {
+                case 'up':
+                    spriteRow = 2; // Linha para o ocioso para cima
+                    break;
+                case 'down':
+                    spriteRow = 0; // Linha para o ocioso para baixo
+                    break;
+                case 'left':
+                    spriteRow = 1; // Linha para o ocioso para a esquerda
+                    break;
+                case 'right':
+                    spriteRow = -1; // Linha para o ocioso para a direita
+                    break
+            }
+        } else {
+            // Se o esqueleto está se movendo, usa a animação de movimento
+            switch (esqueleto.direction) {
+                case 'up':
+                    spriteRow = 5; // Linha para o movimento para cima
+                    break;
+                case 'down':
+                    spriteRow = 3; // Linha para o movimento para baixo
+                    break;
+                case 'left':
+                    spriteRow = 4; // Linha para o movimento para a esquerda
+                    break;
+                case 'right':
+                    spriteRow = 4; // Linha para o movimento para a direita
+                    break;
+            }
+        }
+
+        ctxsprite.save(); // Salva o estado atual do contexto
+
+        // Caso esteja se movendo para a esquerda, inverte a escala horizontal
+        if (esqueleto.direction === 'left') {
+            ctxsprite.scale(-1, 1); // Espelha horizontalmente
+            ctxsprite.drawImage(
+                esqueleto.image,
+                esqueleto.width * esqueleto.frame,
+                esqueleto.height * spriteRow,
+                esqueleto.width,
+                esqueleto.height,
+                -(esqueleto.position.x + esqueleto.width * 2.5), // Ajusta a posição invertida
+                esqueleto.position.y,
+                esqueleto.width * 2.5,
+                esqueleto.height * 2.5
+            );
+        } else {
+            // Desenho normal (sem espelhamento)
+            ctxsprite.drawImage(
+                esqueleto.image,
+                esqueleto.width * esqueleto.frame,
+                esqueleto.height * spriteRow,
+                esqueleto.width,
+                esqueleto.height,
+                esqueleto.position.x,
+                esqueleto.position.y,
+                esqueleto.width * 2.5,
+                esqueleto.height * 2.5
+            );
+        }
+
+        ctxsprite.restore(); // Restaura o estado original do contexto
     }
 }
+
+
+
+
+// Função de loop do jogo
+function gameLoop(currentTime) {
+    updateesqueletoAnimation(currentTime);
+    moveesqueletoToTarget();  // Atualiza a posição em direção ao alvo
+    if (Math.abs(esqueleto.position.x - esqueleto.targetPosition.x) < 5 && 
+        Math.abs(esqueleto.position.y - esqueleto.targetPosition.y) < 5) {
+        // Se o esqueleto alcançou a posição alvo, gera uma nova posição
+        generateNewPosition();
+    }
+    drawesqueleto();           // Desenha o esqueleto
+    requestAnimationFrame(gameLoop); // Chama o próximo frame
+}
+
+// Gera a primeira posição aleatória para o esqueleto
+generateNewPosition()
+
+// Inicia o loop do jogo
+requestAnimationFrame(gameLoop);
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 
