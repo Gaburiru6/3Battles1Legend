@@ -615,21 +615,18 @@ function PositionDialogueminer(){
 }
 posiçãointerval = setInterval(PositionDialogueminer, 1000);
 //esqueleto----------------------------------------------------------------------------------------------------------------
-// Definição do objeto esqueleto
+//esqueleto--------------------------------------->
+
 const esqueleto = {
     image: new Image(),
     width: 13,
     height: 20,
-    frame: 0, 
-    animationSpeed: 300, 
+    frame: 0,
+    animationSpeed: 300,
     lastFrameTime: 0,
     position: {
-        x: (canvas.width / 2) - 60, 
+        x: (canvas.width / 2) - 60,
         y: (canvas.height / 2) - 100
-    },
-    targetPosition: {
-        x: 0,
-        y: 0
     },
     velocity: {
         x: 0,
@@ -645,12 +642,21 @@ esqueleto.image.onload = () => {
     esqueleto.height = esqueleto.image.height / 10; // Altura de cada frame
 };
 
+// Array com posições predefinidas
+const pathPositions = [
+    { x: 100, y: 100 },
+    { x: 200, y: 100 },
+    { x: 200, y: 200 },
+    { x: 100, y: 200 },
+];
+let currentTargetIndex = 0; // Índice da posição atual no array
+
 // Função para limpar a área ocupada pelo esqueleto
 function clearesqueleto() {
     ctxsprite.clearRect(
-        esqueleto.position.x - 1, // Margem para evitar sobras
+        esqueleto.position.x - 1, 
         esqueleto.position.y - 1,
-        esqueleto.width * 2 + 2, // Limpeza proporcional ao tamanho do sprite
+        esqueleto.width * 2 + 2,
         esqueleto.height * 2 + 2
     );
 }
@@ -658,132 +664,111 @@ function clearesqueleto() {
 // Função para atualizar a animação do esqueleto
 function updateesqueletoAnimation(currentTime) {
     if (currentTime - esqueleto.lastFrameTime >= esqueleto.animationSpeed) {
-        esqueleto.frame = (esqueleto.frame + 1) % 2; // Alterna entre os frames 0 e 1
-        esqueleto.lastFrameTime = currentTime; // Atualiza o tempo do último frame
+        esqueleto.frame = (esqueleto.frame + 1) % 2; 
+        esqueleto.lastFrameTime = currentTime;
     }
 }
 
-// Função para verificar a distância entre a posição atual e a nova posição
-function isFarEnough(newX, newY) {
-    const distance = Math.sqrt(
-        Math.pow(newX - esqueleto.position.x, 2) + Math.pow(newY - esqueleto.position.y, 2)
-    );
-    return distance > 50; // A distância mínima entre a nova posição e a posição atual (ajuste conforme necessário)
-}
+// Função para mover o esqueleto entre posições do array
+function moveEsqueletoAlongPath() {
+    const speed = 2; 
 
-// Função para gerar uma nova posição aleatória
-function generateNewPosition() {
-    let newX, newY;
-
-    do {
-        // Gera uma nova posição aleatória dentro dos limites do canvas
-        newX = Math.floor(Math.random() * (canvas.width - 200)); 
-        newY = Math.floor(Math.random() * (canvas.height - 200));
-    } while (!isFarEnough(newX, newY)); // Verifica se a nova posição é suficientemente distante
-
-    esqueleto.targetPosition.x = newX;
-    esqueleto.targetPosition.y = newY;
-}
-
-// Função para mover o esqueleto em direção à nova posição
-function moveesqueletoToTarget() {
-    const speed = 2; // Velocidade do movimento
+    // Alvo atual no array
+    const target = pathPositions[currentTargetIndex];
 
     // Calcular a diferença entre a posição atual e a posição alvo
-    const dx = esqueleto.targetPosition.x - esqueleto.position.x;
-    const dy = esqueleto.targetPosition.y - esqueleto.position.y;
+    const dx = target.x - esqueleto.position.x;
+    const dy = target.y - esqueleto.position.y;
 
     // Verifica a distância euclidiana
     const distance = Math.sqrt(dx * dx + dy * dy);
-    const threshold = 5; // Distância mínima para considerar que o esqueleto chegou ao alvo
+    const threshold = 5;
 
-    // Se a distância for menor que o limiar, o esqueleto já está no alvo
+    // Se o esqueleto alcançou a posição alvo
     if (distance < threshold) {
-        // Garante que a velocidade é zero e que o esqueleto não se move mais
-        esqueleto.velocity.x = 0;
-        esqueleto.velocity.y = 0;
-        return; // Sai da função sem fazer mais nada
+        esqueleto.position.x = target.x;
+        esqueleto.position.y = target.y;
+
+        // Passa para a próxima posição no array
+        currentTargetIndex = (currentTargetIndex + 1) % pathPositions.length;
+        return;
     }
 
-    //Tentativa falha de tentar fazer ele não se mover na diagonal:-------------------------------------
-    // Caso contrário, move o esqueleto na direção mais próxima
-    if (Math.abs(dx) > Math.abs(dy)) { // Se a distância horizontal for maior
-        esqueleto.velocity.x = dx > 0 ? speed : -speed;
-        esqueleto.velocity.y = 0; // Zera o movimento vertical
-        esqueleto.direction = dx > 0 ? 'right' : 'left'; // Definir a direção horizontal
-    } else { // Se a distância vertical for maior
-        esqueleto.velocity.x = 0; // Zera o movimento horizontal
-        esqueleto.velocity.y = dy > 0 ? speed : -speed;
-        esqueleto.direction = dy > 0 ? 'down' : 'up'; // Definir a direção vertical
-    }
-    //-------------------------------------------------------------------------------------------------
+    // Normaliza o vetor de direção para velocidade constante
+    const directionX = dx / distance;
+    const directionY = dy / distance;
 
-    // Atualiza a posição do esqueleto com base na direção
+    // Atualiza a velocidade com base na direção
+    esqueleto.velocity.x = directionX * speed;
+    esqueleto.velocity.y = directionY * speed;
+
+    // Atualiza a posição do esqueleto
     esqueleto.position.x += esqueleto.velocity.x;
     esqueleto.position.y += esqueleto.velocity.y;
+
+    // Atualiza a direção
+    if (Math.abs(dx) > Math.abs(dy)) {
+        esqueleto.direction = dx > 0 ? 'right' : 'left';
+    } else {
+        esqueleto.direction = dy > 0 ? 'down' : 'up';
+    }
 }
 
-
-// Função para desenhar o esqueleto com base na direção
+// Função para desenhar o esqueleto
 function drawesqueleto() {
     clearesqueleto();
 
     if (esqueleto.image.complete) {
-        let spriteRow = 0; // Linha do sprite sheet que será usada
+        let spriteRow = 0; 
         
-        // Verifica se o esqueleto está parado ou se movendo
         if (esqueleto.velocity.x === 0 && esqueleto.velocity.y === 0) {
-            // Se o esqueleto não está se movendo, usa a animação de ocioso
             switch (esqueleto.direction) {
                 case 'up':
-                    spriteRow = 2; // Linha para o ocioso para cima
+                    spriteRow = 2;
                     break;
                 case 'down':
-                    spriteRow = 0; // Linha para o ocioso para baixo
+                    spriteRow = 0;
                     break;
                 case 'left':
-                    spriteRow = 1; // Linha para o ocioso para a esquerda
+                    spriteRow = 1;
                     break;
                 case 'right':
-                    spriteRow = -1; // Linha para o ocioso para a direita
-                    break
+                    spriteRow = -1;
+                    break;
             }
         } else {
-            // Se o esqueleto está se movendo, usa a animação de movimento
             switch (esqueleto.direction) {
                 case 'up':
-                    spriteRow = 5; // Linha para o movimento para cima
+                    spriteRow = 5;
                     break;
                 case 'down':
-                    spriteRow = 3; // Linha para o movimento para baixo
+                    spriteRow = 3;
                     break;
                 case 'left':
-                    spriteRow = 4; // Linha para o movimento para a esquerda
+                    spriteRow = 4;
                     break;
                 case 'right':
-                    spriteRow = 4; // Linha para o movimento para a direita
+                    spriteRow = 4;
                     break;
             }
         }
 
-        ctxsprite.save(); // Salva o estado atual do contexto
+        ctxsprite.save();
 
-        // Caso esteja se movendo para a esquerda, inverte a escala horizontal
         if (esqueleto.direction === 'left') {
-            ctxsprite.scale(-1, 1); // Espelha horizontalmente
+            ctxsprite.scale(-1, 1);
             ctxsprite.drawImage(
                 esqueleto.image,
                 esqueleto.width * esqueleto.frame,
                 esqueleto.height * spriteRow,
                 esqueleto.width,
                 esqueleto.height,
-                -(esqueleto.position.x + esqueleto.width * 2.5), // Ajusta a posição invertida
+                -(esqueleto.position.x + esqueleto.width * 2.5),
                 esqueleto.position.y,
                 esqueleto.width * 2.5,
                 esqueleto.height * 2.5
             );
         } else {
-            // Desenho normal (sem espelhamento)
             ctxsprite.drawImage(
                 esqueleto.image,
                 esqueleto.width * esqueleto.frame,
@@ -797,31 +782,25 @@ function drawesqueleto() {
             );
         }
 
-        ctxsprite.restore(); // Restaura o estado original do contexto
+        ctxsprite.restore();
     }
 }
 
-
-
-
-// Função de loop do jogo
+// Loop do jogo
 function gameLoop(currentTime) {
-    updateesqueletoAnimation(currentTime);
-    moveesqueletoToTarget();  // Atualiza a posição em direção ao alvo
-    if (Math.abs(esqueleto.position.x - esqueleto.targetPosition.x) < 5 && 
-        Math.abs(esqueleto.position.y - esqueleto.targetPosition.y) < 5) {
-        // Se o esqueleto alcançou a posição alvo, gera uma nova posição
-        generateNewPosition();
-    }
-    drawesqueleto();           // Desenha o esqueleto
-    requestAnimationFrame(gameLoop); // Chama o próximo frame
-}
+    ctxsprite.clearRect(0, 0, canvas.width, canvas.height);
 
-// Gera a primeira posição aleatória para o esqueleto
-generateNewPosition()
+    updateesqueletoAnimation(currentTime);
+    moveEsqueletoAlongPath(); // Movimento entre posições predefinidas
+    drawesqueleto();
+
+    requestAnimationFrame(gameLoop);
+    
+}
 
 // Inicia o loop do jogo
 requestAnimationFrame(gameLoop);
+
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 
