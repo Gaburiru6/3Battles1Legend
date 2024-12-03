@@ -579,9 +579,19 @@ function drawPig() {
 }
 //--------------------------------------------------------------------------------------------------------------------------------------
 //Dialogos npc
-var dialogueflorist = new Boolean(false);
-var dialoguechopper = new Boolean(false);
-var dialogueminer = new Boolean(false);
+let dialogueflorist = false;
+let dialoguechopper = false;
+let dialogueminer = false;
+canvasdialogo = document.getElementById("dialogo");
+ctxdialogo = canvasdialogo.getContext("2d");
+
+function hideText() {
+    if(dialogueflorist === false && dialoguechopper === false && dialogueminer === false){
+    ctxdialogo.clearRect(0, 0, canvasdialogo.width, canvasdialogo.height);
+    }
+}
+
+        //florist
 function PositionDialogueFlorist(){
     let fx = florist.position.x;
     let fy = florist.position.y;
@@ -589,10 +599,23 @@ function PositionDialogueFlorist(){
         dialogueflorist = true;
     }else{
         dialogueflorist = false;
+        hideText();
     }
 }
-posiçãointerval = setInterval(PositionDialogueFlorist, 1000);
 
+function showFloristText() {
+    let x = canvasdialogo.width / 4;
+    let y = canvasdialogo.height / 2 + 150;
+    ctxdialogo.font = "20px Arial";
+    ctxdialogo.fillStyle = "#AF8100";
+    ctxdialogo.fillRect(x, y, 620, 170); 
+    ctxdialogo.fillStyle = "#DFC57B";
+    ctxdialogo.fillRect(x+10, y+10, 600, 150); 
+    ctxdialogo.fillStyle = "black";
+    ctxdialogo.fillText("Bravo é o guerreiro que suja sua espada de sangue!", x+50, y+90);
+}
+ 
+        //chopper
 function PositionDialogueChopper(){
     let cx = chopper.position.x;
     let cy = chopper.position.y;
@@ -600,10 +623,23 @@ function PositionDialogueChopper(){
         dialoguechopper = true;
     }else{
         dialoguechopper = false;
+        hideText();
     }
 }
-posiçãointerval = setInterval(PositionDialogueChopper, 1000);
 
+function showchopperText() {
+    let x = canvasdialogo.width / 4;
+    let y = canvasdialogo.height / 2 + 150;
+    ctxdialogo.font = "20px Arial";
+    ctxdialogo.fillStyle = "#AF8100";
+    ctxdialogo.fillRect(x, y, 620, 170); 
+    ctxdialogo.fillStyle = "#DFC57B";
+    ctxdialogo.fillRect(x+10, y+10, 600, 150); 
+    ctxdialogo.fillStyle = "black";
+    ctxdialogo.fillText("Olá aventureiro, você pode nos ajudar a vencer esses monstros?", x+25, y+90);
+}
+
+        //miner
 function PositionDialogueminer(){
     let mx = miner.position.x;
     let my = miner.position.y;
@@ -613,7 +649,38 @@ function PositionDialogueminer(){
         dialogueminer = false;
     }
 }
-posiçãointerval = setInterval(PositionDialogueminer, 1000);
+
+function showminerText() {
+    let x = canvasdialogo.width / 4;
+    let y = canvasdialogo.height / 2 + 150;
+    ctxdialogo.font = "20px Arial";
+    ctxdialogo.fillStyle = "#AF8100";
+    ctxdialogo.fillRect(x, y, 620, 170); 
+    ctxdialogo.fillStyle = "#DFC57B";
+    ctxdialogo.fillRect(x+10, y+10, 600, 150); 
+    ctxdialogo.fillStyle = "black";
+    ctxdialogo.fillText("Uai sô, esses trem ossudo comeram tudo meus pão de queijo", x+30, y+90);
+}
+
+function setupKeyListener() {
+    window.addEventListener('keydown', (dialogo) => {
+        if (dialogo.key === "q" && dialoguechopper === true) {
+            showchopperText();
+        }
+        if (dialogo.key === "q" && dialogueflorist === true) {
+            showFloristText();
+        }
+        if (dialogo.key === "q" && dialogueminer === true) {
+            showminerText();
+        }
+    });
+}
+
+setupKeyListener();
+posiçãointerval = setInterval(PositionDialogueFlorist, 100);
+posiçãointerval = setInterval(PositionDialogueChopper, 100);
+posiçãointerval = setInterval(PositionDialogueminer, 100);
+
 //esqueleto----------------------------------------------------------------------------------------------------------------
 //esqueleto--------------------------------------->
 
