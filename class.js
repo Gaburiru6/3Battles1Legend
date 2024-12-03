@@ -681,8 +681,9 @@ posiçãointerval = setInterval(PositionDialogueFlorist, 100);
 posiçãointerval = setInterval(PositionDialogueChopper, 100);
 posiçãointerval = setInterval(PositionDialogueminer, 100);
 
-//esqueleto----------------------------------------------------------------------------------------------------------------
-//esqueleto--------------------------------------->
+//Inimigos----------------------------------------------------------------------------------------------------------------
+
+//esqueleto_01--------------------------------------->
 
 const esqueleto = {
     image: new Image(),
@@ -699,22 +700,27 @@ const esqueleto = {
         x: 0,
         y: 0
     },
-    direction: 'down', // Direção inicial do esqueleto
+    direction: 'down', 
+    health: 3,         
+    maxHealth: 3,      
+    isDead: false,     
+    visible: true,     
+    isBeingAttacked: false,  
 };
 
 // Carregamento da imagem do esqueleto
 esqueleto.image.src = "Cute_Fantasy_Free/Enemies/Skeleton.png";
 esqueleto.image.onload = () => {
-    esqueleto.width = esqueleto.image.width / 6; // Largura de cada frame
-    esqueleto.height = esqueleto.image.height / 10; // Altura de cada frame
+    esqueleto.width = esqueleto.image.width / 6; 
+    esqueleto.height = esqueleto.image.height / 10;
 };
 
-// Array com posições predefinidas
+// Array com posições predefinidas para onde ele pode ir
 const pathPositions = [
-    { x: 100, y: 100 },
-    { x: 200, y: 100 },
-    { x: 200, y: 200 },
-    { x: 100, y: 200 },
+    { x: 300, y: 300},
+    { x: 300, y: 300 },
+    { x: 300, y: 300 },
+    { x: 700, y: 300 },
 ];
 let currentTargetIndex = 0; // Índice da posição atual no array
 
@@ -730,50 +736,52 @@ function clearesqueleto() {
 
 // Função para atualizar a animação do esqueleto
 function updateesqueletoAnimation(currentTime) {
+    if (esqueleto.isDead) {
+        // Se o esqueleto estiver morto, ele simplesmente desaparece(pode ser colocado o sprite dele morrendo tabém, porém dará mais trabalho ainda)
+        esqueleto.visible = false; 
+        return;
+    }
+
+    // Se o esqueleto estiver vivo, executa a animação de movimento
     if (currentTime - esqueleto.lastFrameTime >= esqueleto.animationSpeed) {
         esqueleto.frame = (esqueleto.frame + 1) % 2; 
         esqueleto.lastFrameTime = currentTime;
     }
 }
 
-// Função para mover o esqueleto entre posições do array
+
+// Função para mover o esqueleto
 function moveEsqueletoAlongPath() {
+    if (esqueleto.isDead) {
+        return; 
+    }
+
     const speed = 2; 
 
-    // Alvo atual no array
     const target = pathPositions[currentTargetIndex];
 
-    // Calcular a diferença entre a posição atual e a posição alvo
     const dx = target.x - esqueleto.position.x;
     const dy = target.y - esqueleto.position.y;
 
-    // Verifica a distância euclidiana
     const distance = Math.sqrt(dx * dx + dy * dy);
     const threshold = 5;
 
-    // Se o esqueleto alcançou a posição alvo
     if (distance < threshold) {
         esqueleto.position.x = target.x;
         esqueleto.position.y = target.y;
-
-        // Passa para a próxima posição no array
         currentTargetIndex = (currentTargetIndex + 1) % pathPositions.length;
         return;
     }
 
-    // Normaliza o vetor de direção para velocidade constante
     const directionX = dx / distance;
     const directionY = dy / distance;
 
-    // Atualiza a velocidade com base na direção
     esqueleto.velocity.x = directionX * speed;
     esqueleto.velocity.y = directionY * speed;
 
-    // Atualiza a posição do esqueleto
     esqueleto.position.x += esqueleto.velocity.x;
     esqueleto.position.y += esqueleto.velocity.y;
 
-    // Atualiza a direção
     if (Math.abs(dx) > Math.abs(dy)) {
         esqueleto.direction = dx > 0 ? 'right' : 'left';
     } else {
@@ -783,6 +791,10 @@ function moveEsqueletoAlongPath() {
 
 // Função para desenhar o esqueleto
 function drawesqueleto() {
+    if (esqueleto.isDead) {
+        return;
+    }
+
     clearesqueleto();
 
     if (esqueleto.image.complete) {
@@ -850,6 +862,36 @@ function drawesqueleto() {
         }
 
         ctxsprite.restore();
+    }
+}
+
+
+// Função para reduzir a vida do esqueleto
+function takeDamage() {
+    if (esqueleto.isDead || esqueleto.isBeingAttacked) return;  // Impede que o esqueleto seja atacado mais de uma vez rapidamente
+
+    esqueleto.isBeingAttacked = true;  // Marque que o esqueleto está sendo atacado
+
+    esqueleto.health -= 1;
+
+    // Se a vida do esqueleto chegar a 0, ele morre
+    if (esqueleto.health <= 0) {
+        esqueleto.isDead = true;
+        esqueleto.visible = false;  // Faz o esqueleto desaparecer
+    }
+
+    // Após um intervalo de tempo, permite que o esqueleto seja atacado novamente
+    setTimeout(() => {
+        esqueleto.isBeingAttacked = false;  // Permite que o esqueleto seja atacado novamente
+    }, 500);  // ajustat esse tempo depois
+}
+
+// Função para verificar se o player está atacando 
+function checkPlayerAttack() {
+    if (player.isAttacking && !esqueleto.isDead) {
+        if (rectangularCollision({ rectangle1: player, rectangle2: esqueleto })) {
+            takeDamage(1); 
+        }
     }
 }
 
@@ -927,6 +969,9 @@ function animate(currentTime) {
         // Desenhar o personagem
         player.draw();
         foreground.draw();
+
+        // Verificar ataque do jogador no esqueleto
+        checkPlayerAttack();
     
         let movendo = true;
         player.movendo = false
