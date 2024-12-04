@@ -1,5 +1,6 @@
 const canvasM = document.getElementById('gameMenuCanvas');
-const ctxM = canvasM.getContext("2d")
+const ctxM = canvasM.getContext("2d");
+
 // Ajustar o canvas para ocupar a tela inteira
 canvasM.width = 1240;
 canvasM.height = 720;
@@ -13,38 +14,45 @@ const buttons = [
     { text: "Sair", x: (canvasM.width - buttonWidth) / 2, y: canvasM.height / 2 + 20, width: buttonWidth, height: buttonHeight, isHovered: false }
 ];
 
-// Carregar a imagem de fundo
+// Estado atual da tela
+let currentScreen = "menu"; // Pode ser "menu", "victory", "defeat" ou "game"
+
+// Imagens de fundo
 const backgroundImage = new Image();
 backgroundImage.src = './MenuGame/BackGroundMenu.png';
 
-// Função para desenhar o título do jogo com contorno
-function drawTitle() {
-    ctxM.font = "80px 'MedievalSharp', sans-serif"; // Fonte do título
-    ctxM.fillStyle = '#f4a460'; // Cor do texto
+const gameoverImage = new Image();
+gameoverImage.src = './Finais/finalDerrota.png';
+
+const victoryImage = new Image();
+victoryImage.src = './Finais/finalVitoria.png';
+
+// Funções genéricas de desenho
+function drawBackground(image) {
+    ctxM.drawImage(image, 0, 0, canvasM.width, canvasM.height);
+}
+
+function drawCenteredText(text, yPosition) {
+    ctxM.font = "80px 'MedievalSharp', sans-serif";
+    ctxM.fillStyle = '#f4a460';
     ctxM.textAlign = 'center';
     ctxM.textBaseline = 'middle';
 
-    // Desenha o contorno
-    ctxM.lineWidth = 5; // Largura do contorno
-    ctxM.strokeStyle = 'black'; // Cor do contorno
-    ctxM.strokeText("Três batalhas, uma lenda", canvasM.width / 2, 150); // Desenha o contorno
+    ctxM.lineWidth = 5;
+    ctxM.strokeStyle = 'black';
+    ctxM.strokeText(text, canvasM.width / 2, yPosition);
 
-    // Desenha o texto principal
-    ctxM.fillText("Três batalhas, uma lenda", canvasM.width / 2, 150); // Desenha o texto em si
+    ctxM.fillText(text, canvasM.width / 2, yPosition);
 }
 
 // Função para desenhar os botões
 function drawButtons() {
     buttons.forEach(button => {
-        if (button.isHovered) {
-            ctxM.fillStyle = '#f39c12'; // Cor quando o botão é hover
-        } else {
-            ctxM.fillStyle = 'black'; // Cor verde floresta padrão
-        }
+        ctxM.fillStyle = button.isHovered ? '#f39c12' : 'black';
         ctxM.fillRect(button.x, button.y, button.width, button.height);
 
         ctxM.fillStyle = 'white';
-        ctxM.font = "50px 'MedievalSharp', sans-serif"; // Usando a mesma fonte do título
+        ctxM.font = "50px 'MedievalSharp', sans-serif";
         ctxM.fillText(button.text, button.x + button.width / 2, button.y + button.height / 2);
     });
 }
@@ -56,57 +64,70 @@ function checkHover(x, y) {
     });
 }
 
-// Função para desenhar o fundo da imagem
-function drawBackground() {
-    ctxM.drawImage(backgroundImage, 0, 0, canvasM.width, canvasM.height);
-}
-
-// Função que atualiza a animação do menu
+// Função para atualizar o menu
 function updateMenu() {
-    ctxM.clearRect(0, 0, canvasM.width, canvasM.height); // Limpa a tela
-    
-    drawBackground();
-    drawTitle();
-    drawButtons();
+    ctxM.clearRect(0, 0, canvasM.width, canvasM.height);
+
+    if (currentScreen === "menu") {
+        drawBackground(backgroundImage);
+        drawCenteredText("Três batalhas, uma lenda", 150);
+        drawButtons();
+    } else if (currentScreen === "defeat") {
+        drawBackground(gameoverImage);
+        drawCenteredText("Oh não, você foi derrotado", canvasM.height / 2);
+    } else if (currentScreen === "victory") {
+        drawBackground(victoryImage);
+        drawCenteredText("Parabéns, você salvou a vila", canvasM.height / 2);
+    }
 }
 
-// Função que lida com os cliques do mouse
+// Eventos de clique no canvas
 canvasM.addEventListener('click', (e) => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
 
-    buttons.forEach(button => {
-        if (button.isHovered) {
-            if (button.text === "Jogar") {
-                canvasM.style.display = 'none'; 
-                cutsc.style.display = 'block';
-
-                updateCutsc()
-                //alert("Iniciar o jogo..."); //-Teste para ver se o botão está funcionando
-            } else if (button.text === "Sair") {
-                // alert("Saindo..."); -Teste para ver se o botão está funcionando
-                window.close();
+    if (currentScreen === "menu") {
+        buttons.forEach(button => {
+            if (button.isHovered) {
+                if (button.text === "Jogar") {
+                    canvasM.style.display = 'none';
+                    currentScreen = "game"; // Aqui você inicia o jogo
+                } else if (button.text === "Sair") {
+                    window.close();
+                }
             }
-        }
-    });
+        });
+    } else if (currentScreen === "defeat" || currentScreen === "victory") {
+        currentScreen = "menu"; // Retorna ao menu principal
+        updateMenu();
+    }
 });
 
-// Função que lida com o movimento do mouse
+// Eventos de movimento do mouse
 canvasM.addEventListener('mousemove', (e) => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
     checkHover(mouseX, mouseY);
-    updateMenu(); // Atualiza a animação
+    updateMenu();
 });
+// Lógica de vitória e derrota
+function checkGameState(vida, inimigoMorto1,inimigoMorto2,inimigoMorto3) {
+    if (vida == 0) {
+        currentScreen = "defeat";
+        if (canvasM.style.display !== 'block') {
+            canvasM.style.display = 'block'; // Certifique-se de mostrar o canvas
+        }
+        updateMenu(); // Atualiza o menu com a tela de derrota
+    } else if (inimigoMorto1 && inimigoMorto2 && inimigoMorto3) {
+        currentScreen = "victory";
+        if (canvasM.style.display !== 'block') {
+            canvasM.style.display = 'block'; // Certifique-se de mostrar o canvas
+        }
+        updateMenu(); // Atualiza o menu com a tela de vitória
+    }
+}
 
 // Inicializa o menu
 backgroundImage.onload = () => {
-    updateMenu(); // Chama a função que desenha o menu depois da imagem carregar
+    updateMenu();
 };
-
-// Ajusta o tamanho do canvas ao redimensionar a janela
-// window.addEventListener('resize', () => {
-//     canvasM.width = window.innerWidth;
-//     canvasM.height = window.innerHeight;
-//     updateMenu(); // Atualiza a tela quando a janela for redimensionada
-// });

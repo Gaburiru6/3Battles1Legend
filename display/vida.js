@@ -2,7 +2,6 @@ const canvasItem = document.getElementById("canvasItens")
 const ctxItem = canvasItem.getContext("2d")
 
 let vida = 3
-
 const coracaoVivo = new Image();
 coracaoVivo.src = './display/coracao.png'; // Caminho da imagem do coração vivo
 

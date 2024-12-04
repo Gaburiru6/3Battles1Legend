@@ -1,6 +1,9 @@
 
 //--------------------------------------------------------------------------------------------------------------
 //class.js
+let inimigoMorto1 = false;
+let inimigoMorto2 = false;
+let inimigoMorto3 = false;
 const canvasJ = document.getElementById('gameMenuCanvas');
 const ctxJ = canvasJ.getContext('2d');
 
@@ -83,7 +86,7 @@ class Sprite {
         }
         // Desenhar a área de ataque (bloco invisível)
         if (this.isAttacking) {
-            ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Vermelho semitransparente
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.0)'; // Vermelho semitransparente
             ctx.fillRect(
                 this.attackBox.position.x,
                 this.attackBox.position.y,
@@ -284,7 +287,7 @@ canvassprite.style.backgroundColor = "rgba(255,0,0,0.0)";
 const playerImage = new Image(); // Cria a constante da imagem
 playerImage.src = './Cute_Fantasy_Free/Player/Player.png'; // Carrega a imagem do personagem
 
-map.src = '../mapa/mapa.png'; // Carrega a imagem do mapa
+map.src = './mapa/mapa.png'; // Carrega a imagem do mapa
 
 offset = {
     x: -1280,
@@ -591,7 +594,7 @@ function hideText() {
     }
 }
 
-        //florist
+//florist
 function PositionDialogueFlorist(){
     let fx = florist.position.x;
     let fy = florist.position.y;
@@ -615,7 +618,7 @@ function showFloristText() {
     ctxdialogo.fillText("Bravo é o guerreiro que suja sua espada de sangue!", x+50, y+90);
 }
  
-        //chopper
+//chopper
 function PositionDialogueChopper(){
     let cx = chopper.position.x;
     let cy = chopper.position.y;
@@ -639,7 +642,7 @@ function showchopperText() {
     ctxdialogo.fillText("Olá aventureiro, você pode nos ajudar a vencer esses monstros?", x+25, y+90);
 }
 
-        //miner
+//miner
 function PositionDialogueminer(){
     let mx = miner.position.x;
     let my = miner.position.y;
@@ -682,230 +685,499 @@ posiçãointerval = setInterval(PositionDialogueChopper, 100);
 posiçãointerval = setInterval(PositionDialogueminer, 100);
 
 //Inimigos----------------------------------------------------------------------------------------------------------------
-
-//esqueleto_01--------------------------------------->
-
-const esqueleto = {
+//slime 1
+const slime = {
     image: new Image(),
-    width: 13,
-    height: 20,
-    frame: 0,
-    animationSpeed: 300,
-    lastFrameTime: 0,
+    width: 0,
+    height: 0,
+    frame: 0, // Frame atual (0 ou 1)
+    animationSpeed: 150, // Velocidade da animação (em ms)
+    lastFrameTime: 0, // Marca o tempo do último frame
     position: {
-        x: (canvas.width / 2) - 60,
-        y: (canvas.height / 2) - 100
+        x: (canvas.width / 2) + 230, // Posição inicial x
+        y: (canvas.height / 2) + 260 // Posição inicial y
     },
-    velocity: {
-        x: 0,
-        y: 0
-    },
-    direction: 'down', 
-    health: 3,         
-    maxHealth: 3,      
-    isDead: false,     
-    visible: true,     
-    isBeingAttacked: false,  
+    direction: 0,
+    health: 2,
+    isDead: false,
+    visible: true,
+    atacado: false
 };
 
-// Carregamento da imagem do esqueleto
-esqueleto.image.src = "Cute_Fantasy_Free/Enemies/Skeleton.png";
-esqueleto.image.onload = () => {
-    esqueleto.width = esqueleto.image.width / 6; 
-    esqueleto.height = esqueleto.image.height / 10;
+
+slime.image.src = './Cute_Fantasy_Free/Enemies/slime.png';
+slime.image.onload = () => {
+    slime.width = slime.image.width / 6; // Largura de cada frame
+    slime.height = slime.image.height / 3; // Altura de cada frame
 };
 
-// Função para limpar a área ocupada pelo esqueleto
-function clearesqueleto() {
+
+function clearSlime() {
     ctxsprite.clearRect(
-        esqueleto.position.x - 1, 
-        esqueleto.position.y - 1,
-        esqueleto.width * 2 + 2,
-        esqueleto.height * 2 + 2
+        slime.position.x , 
+        slime.position.y ,
+        slime.width*2 ,
+        slime.height *2
     );
 }
 
-// Função para atualizar a animação do esqueleto
-function updateesqueletoAnimation(currentTime) {
-    if (esqueleto.isDead) {
-        // Se o esqueleto estiver morto, ele simplesmente desaparece(pode ser colocado o sprite dele morrendo tabém, porém dará mais trabalho ainda)
-        esqueleto.visible = false; 
+
+function updateSlimeAnimation(currentTime) {
+    if (currentTime - slime.lastFrameTime >= slime.animationSpeed) {
+        slime.frame = (slime.frame + 1) % 4; 
+        slime.lastFrameTime = currentTime; // Atualiza o tempo do último frame
+    }
+}
+
+// Função de movimentação do slime
+function moveSlime() {
+    if(slime.isDead){
         return;
-    }
+    }else{
+        // Atualiza a direção aleatoriamente a cada 10 segundos
+        if (slime.direction === 0) {
+            slime.position.x += 20; // Mover para a direita
+        } else if (slime.direction === 1) {
+            slime.position.x -= 20; // Mover para a esquerda
+        } else if (slime.direction === 2) {
+            slime.position.y += 20; // Mover para baixo
+        } else if (slime.direction === 3) {
+            slime.position.y -= 20; // Mover para cima
+        }
 
-    // Se o esqueleto estiver vivo, executa a animação de movimento
-    if (currentTime - esqueleto.lastFrameTime >= esqueleto.animationSpeed) {
-        esqueleto.frame = (esqueleto.frame + 1) % 2; 
-        esqueleto.lastFrameTime = currentTime;
-    }
-}
-
-// Função para movimentar o esqueleto aleatoriamente
-function moveEsqueletoRandomly() {
-    const speed = 2;
-
-    if (esqueleto.isDead) return;
-
-    // Atualiza a posição do esqueleto
-    esqueleto.position.x += esqueleto.velocity.x;
-    esqueleto.position.y += esqueleto.velocity.y;
-
-    // (Deixarei assim, se você não quiser que o esquelete acompanhe o player apague essas 6 linhas de código, entretanto, ele andará para qualquer lugar possível) 
-    // Rebate nas bordas do canvas (Mas causa o bug dele fazer Moonwalk)
-    if (esqueleto.position.x <= 0 || esqueleto.position.x >= canvas.width - esqueleto.width) {
-        esqueleto.velocity.x *= -1; // Inverte a direção horizontal
-    }
-    if (esqueleto.position.y <= 0 || esqueleto.position.y >= canvas.height - esqueleto.height) {
-        esqueleto.velocity.y *= -1; // Inverte a direção vertical
+        // Alterar a direção aleatoriamente a cada 10 segundos
+        slime.direction = Math.floor(Math.random() * 4); // Aleatoriamente define uma nova direção (0 a 3)
     }
 }
 
-// Alterar a direção do esqueleto aleatoriamente em intervalos regulares
+function drawSlime() {
+    if(slime.isDead || !slime.visible){
+        return;
+    }else{// Limpa a área antes de desenhar
+        clearSlime();
+
+        if (slime.image.complete) {
+            ctxsprite.drawImage(
+                slime.image,
+                slime.width * slime.frame, // Define o frame atual
+                slime.height * 0, // Linha do sprite sheet
+                slime.width, // Largura do frame
+                slime.height, // Altura do frame
+                slime.position.x, // Posição x no canvas
+                slime.position.y, // Posição y no canvas
+                slime.width * 2 , // Escala x
+                slime.height * 2  // Escala y
+            );
+        }
+    }
+}
+function receberDanoSlime() {
+    if(player.isDead){
+        return;
+    }else{
+        if(player.isAttacking && !player.isDead){
+            slime.health -= 1; // Reduz a saúde do slime
+            inimigoMorto1 = true;
+
+
+            if (slime.health <= 0 && !slime.isDead) {
+                slime.isDead = true; // Marca o slime como morto
+                slime.visible = false; // Deixa o slime invisível após a morte
+            }
+        }
+    }
+}
+let ataque= true;
+
+function detectarColisaoJogador(player) {
+    if(slime.isDead){
+        return;
+    }else{
+        const slimeRect = {
+            x: slime.position.x,
+            y: slime.position.y,
+            width: slime.width * 2,
+            height: slime.height * 2
+        };
+
+        const jogadorRect = {
+            x: player.position.x,
+            y: player.position.y,
+            width: player.width,
+            height: player.height
+        };
+
+        // Verifica se há colisão (simples verificação de interseção de retângulos)
+        if (
+            slimeRect.x < jogadorRect.x + jogadorRect.width &&
+            slimeRect.x + slimeRect.width > jogadorRect.x &&
+            slimeRect.y < jogadorRect.y + jogadorRect.height &&
+            slimeRect.y + slimeRect.height > jogadorRect.y
+        ) {
+            if(ataque && !(player.isDead)){
+                receberDano(player)
+                ataque = false;
+                setInterval(() => {
+                    ataque = true;
+                }, 1000);
+            } // Função que aplica o dano ao jogador
+        }
+    }
+}
+
+function updateSlime(currentTime) {
+    if(slime.isDead){
+        return;
+    }else{
+        updateSlimeAnimation(currentTime);
+        drawSlime();
+        moveSlime();
+    }
+}
+
+function podeMorrer(){
+    if(slime.isDead){
+        return;
+    }else{
+        setInterval(()=>{
+            if(player.isAttacking){
+                receberDanoSlime();
+            }
+        },10000)
+    }
+}
+
+setInterval(moveSlime, 1200);
 setInterval(() => {
-    const directions = [-1, 0, 1]; // Possíveis valores para movimento em x e y
-    esqueleto.velocity.x = directions[Math.floor(Math.random() * directions.length)] * 2;
-    esqueleto.velocity.y = directions[Math.floor(Math.random() * directions.length)] * 2;
+    detectarColisaoJogador(player);
+}, 100);
+//--------------------------------------------------------------------------------------------------------------------------------------
+const slimeVerde = {
+    image: new Image(),
+    width: 0,
+    height: 0,
+    frame: 0, // Frame atual (0 ou 1)
+    animationSpeed: 80000, // Velocidade da animação (em ms)
+    lastFrameTime: 0, // Marca o tempo do último frame
+    position: {
+        x: (canvas.width / 2)- 840, // Posição inicial x
+        y: (canvas.height / 2) - 90 // Posição inicial y
+    },
+    direction: 0,
+    health: 2,
+    isDead: false,
+    visible: true,
+    atacado: false
+};
 
-    // Determinar direção para animação
-    if (esqueleto.velocity.x !== 0 || esqueleto.velocity.y !== 0) {
-        if (Math.abs(esqueleto.velocity.x) > Math.abs(esqueleto.velocity.y)) {
-            esqueleto.direction = esqueleto.velocity.x > 0 ? 'right' : 'left';
-        } else {
-            esqueleto.direction = esqueleto.velocity.y > 0 ? 'down' : 'up';
-        }
+
+slimeVerde.image.src = './Cute_Fantasy_Free/Enemies/Slime_Green.png';
+slimeVerde.image.onload = () => {
+    slimeVerde.width = slimeVerde.image.width / 8; // Largura de cada frame
+    slimeVerde.height = slimeVerde.image.height / 3; // Altura de cada frame
+};
+
+
+function clearSlimeVerde() {
+    ctxsprite.clearRect(
+        slimeVerde.position.x , 
+        slimeVerde.position.y ,
+        slimeVerde.width*2 ,
+        slimeVerde.height *2
+    );
+}
+
+
+function updateSlimeAnimationVerde(currentTime) {
+    if (currentTime - slimeVerde.lastFrameTime >= slimeVerde.animationSpeed) {
+        slimeVerde.frame = (slimeVerde.frame + 1) % 8; 
+        slimeVerde.lastFrameTime = currentTime; // Atualiza o tempo do último frame
     }
-}, 2000); // Muda a direção a cada 2 segundos
+}
 
-
-// Função para desenhar o esqueleto
-function drawesqueleto() {
-    if (esqueleto.isDead) {
+// Função de movimentação do slime
+function moveSlimeVerde() {
+    if(slimeVerde.isDead){
         return;
-    }
-
-    clearesqueleto();
-
-    if (esqueleto.image.complete) {
-        let spriteRow = 0; 
-        
-        if (esqueleto.velocity.x === 0 && esqueleto.velocity.y === 0) {
-            switch (esqueleto.direction) {
-                case 'up': spriteRow = 2; break;
-                case 'down': spriteRow = 0; break;
-                case 'left': spriteRow = 1; break;
-                case 'right': spriteRow = 1; break;
-            }
-        } else {
-            switch (esqueleto.direction) {
-                case 'up': spriteRow = 5; break;
-                case 'down': spriteRow = 3; break;
-                case 'left': spriteRow = 4; break;
-                case 'right': spriteRow = 4; break;
-            }
+    }else{
+        // Atualiza a direção aleatoriamente a cada 10 segundos
+        if (slimeVerde.direction === 0) {
+            slimeVerde.position.x += 2; // Mover para a direita
+        } else if (slimeVerde.direction === 1) {
+            slimeVerde.position.x -= 2; // Mover para a esquerda
+        } else if (slimeVerde.direction === 2) {
+            slimeVerde.position.y += 2; // Mover para baixo
+        } else if (slimeVerde.direction === 3) {
+            slimeVerde.position.y -= 2; // Mover para cima
         }
 
-        ctxsprite.save();
-        // O esqueleto não possui sprites para a esquerda, então isso inverte a imagem caso ele se movimente para a esquerda
-        if (esqueleto.direction === 'left') {
-            ctxsprite.scale(-1, 1);
+        // Alterar a direção aleatoriamente a cada 10 segundos
+        slimeVerde.direction = Math.floor(Math.random() * 4); // Aleatoriamente define uma nova direção (0 a 3)
+    }
+}
+
+function drawSlimeVerde() {
+    if(slimeVerde.isDead || !slimeVerde.visible){
+        return;
+    }else{// Limpa a área antes de desenhar
+        clearSlimeVerde();
+
+        if (slimeVerde.image.complete) {
             ctxsprite.drawImage(
-                esqueleto.image,
-                esqueleto.width * esqueleto.frame,
-                esqueleto.height * spriteRow,
-                esqueleto.width,
-                esqueleto.height,
-                -(esqueleto.position.x + esqueleto.width * 2.5),
-                esqueleto.position.y,
-                esqueleto.width * 2.5,
-                esqueleto.height * 2.5
-            );
-        } else {
-            ctxsprite.drawImage(
-                esqueleto.image,
-                esqueleto.width * esqueleto.frame,
-                esqueleto.height * spriteRow,
-                esqueleto.width,
-                esqueleto.height,
-                esqueleto.position.x,
-                esqueleto.position.y,
-                esqueleto.width * 2.5,
-                esqueleto.height * 2.5
+                slimeVerde.image,
+                slimeVerde.width * slimeVerde.frame, // Define o frame atual
+                slimeVerde.height * 0, // Linha do sprite sheet
+                slimeVerde.width, // Largura do frame
+                slimeVerde.height, // Altura do frame
+                slimeVerde.position.x, // Posição x no canvas
+                slimeVerde.position.y, // Posição y no canvas
+                slimeVerde.width * 2 , // Escala x
+                slimeVerde.height * 2  // Escala y
             );
         }
-
-        ctxsprite.restore();
     }
 }
+function receberDanoSlimeVerde() {
+    if(player.isDead) return;
+        if(player.isAttacking && !player.isDead){
+            slimeVerde.health -= 1;
+            inimigoMorto2 = true;
 
-
-// Função para reduzir a vida do esqueleto
-function takeDamage() {
-    if (esqueleto.isDead || esqueleto.isBeingAttacked) return;  // Impede que o esqueleto seja atacado mais de uma vez rapidamente
-
-    esqueleto.isBeingAttacked = true;  // Diz que o esqueleto está sendo atacado
-
-    esqueleto.health -= 1;
-
-    // Se a vida do esqueleto chegar a 0, ele morre
-    if (esqueleto.health <= 0) {
-        esqueleto.isDead = true;
-        esqueleto.visible = false;  // Faz o esqueleto desaparecer
-    }
-
-    // Após um intervalo de tempo, permite que o esqueleto seja atacado novamente
-    setTimeout(() => {
-        esqueleto.isBeingAttacked = false;  // Permite que o esqueleto seja atacado novamente
-    }, 500);  // (ajustat esse tempo depois)
+            // Reduz a saúde do slime
+            if (slimeVerde.health <= 0 && !slimeVerde.isDead) {
+                slimeVerde.isDead = true; // Marca o slime como morto
+                slimeVerde.visible = false; // Deixa o slime invisível após a morte
+            }
+        }
+    
 }
 
-// Função para verificar se o player está atacando 
-function checkPlayerAttack() {
-    if (player.isAttacking && !esqueleto.isDead) {
-        if (rectangularCollision({ rectangle1: player, rectangle2: esqueleto })) {
-            takeDamage(1); 
+function detectarColisaoJogadorVerde(player) {
+    if(slimeVerde.isDead){
+        return;
+    }else{
+        const slimeVRect = {
+            x: slimeVerde.position.x,
+            y: slimeVerde.position.y,
+            width: slimeVerde.width * 2,
+            height: slimeVerde.height * 2
+        };
+
+        const jogadorRect = {
+            x: player.position.x,
+            y: player.position.y,
+            width: player.width,
+            height: player.height
+        };
+
+        // Verifica se há colisão (simples verificação de interseção de retângulos)
+        if (
+            slimeVRect.x < jogadorRect.x + jogadorRect.width &&
+            slimeVRect.x + slimeVRect.width > jogadorRect.x &&
+            slimeVRect.y < jogadorRect.y + jogadorRect.height &&
+            slimeVRect.y + slimeVRect.height > jogadorRect.y
+        ) {
+            if(ataque && !(player.isDead)){
+                receberDano(player)
+                ataque = false;
+                setInterval(() => {
+                    ataque = true;
+                }, 1000);
+            } // Função que aplica o dano ao jogador
         }
     }
 }
 
-let podeCausarDano = true;  // Variável para controlar o intervalo de dano do esqueleto
-const intervaloEsqueleto = 1000; 
-
-// Função para verificar colisão entre o esqueleto e o player e aplicar dano
-function checkEsqueletoCollideWithPlayer() {
-    if (rectangularCollision({ rectangle1: esqueleto, rectangle2: player })) {
-        if (podeCausarDano && !player.isDead) {
-            receberDano();  // Chama a função de dano do player
-            podeCausarDano = false;  // Desabilita a capacidade de causar dano
-
-            // Define um tempo para o esqueleto poder causar dano novamente
-            setTimeout(() => {
-                podeCausarDano = true;  // Libera o esqueleto para causar dano novamente após o intervalo
-            }, intervaloEsqueleto);
-        }
+function updateSlimeVerde(currentTime) {
+    if(slimeVerde.isDead){
+        return;
+    }else{
+        updateSlimeAnimationVerde(currentTime);
+        drawSlimeVerde();
+        moveSlimeVerde();
+    }
+}
+function podeMorrerVerde(){
+    if(slimeVerde.isDead){
+        return;
+    }else{
+        setInterval(()=>{
+            if(player.isAttacking){
+                receberDanoSlimeVerde();
+            }
+        },15000)
     }
 }
 
-// Atualizar o gameLoop para incluir o movimento aleatório
-function gameLoop(currentTime) {
-    ctxsprite.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Atualizações e desenhos do esqueleto
-    updateesqueletoAnimation(currentTime);
-    moveEsqueletoRandomly(); // Movimento aleatório
-    drawesqueleto();
-    checkEsqueletoCollideWithPlayer();
-
-    requestAnimationFrame(gameLoop);
-}
-
-// Inicia o loop do jogo
-requestAnimationFrame(gameLoop);
-
+setInterval(moveSlimeVerde, 500);
+setInterval(() => {
+    detectarColisaoJogadorVerde(player);
+}, 100);
 
 //--------------------------------------------------------------------------------------------------------------------------------------
+const esqueleto = { //so q nao
+    image: new Image(),
+    width: 0,
+    height: 0,
+    frame: 0, // Frame atual (0 ou 1)
+    animationSpeed: 500, // Velocidade da animação (em ms)
+    lastFrameTime: 0, // Marca o tempo do último frame
+    position: {
+        x: (canvas.width / 2)+ 240, // Posição inicial x
+        y: (canvas.height / 2) + 90 // Posição inicial y
+    },
+    direction: 0,
+    health: 2,
+    isDead: false,
+    visible: true,
+    atacado: false
+};
 
 
-const movables = [background, ...bordas, foreground, chopper, florist, miner, pig, esqueleto];
+esqueleto.image.src = './Cute_Fantasy_Free/Enemies/Slime.png';
+esqueleto.image.onload = () => {
+    esqueleto.width = esqueleto.image.width / 6; // Largura de cada frame
+    esqueleto.height = esqueleto.image.height / 3; // Altura de cada frame
+};
+
+
+function clearEsqueleto() {
+    ctxsprite.clearRect(
+        esqueleto.position.x , 
+        esqueleto.position.y ,
+        esqueleto.width*2 ,
+        esqueleto.height *2
+    );
+}
+
+
+function updateEsqueletoAnimation(currentTime) {
+    if (currentTime - esqueleto.lastFrameTime >= esqueleto.animationSpeed) {
+        esqueleto.frame = (esqueleto.frame + 1) % 4; 
+        esqueleto.lastFrameTime = currentTime; // Atualiza o tempo do último frame
+    }
+}
+
+// Função de movimentação do slime
+function moveEsqueleto() {
+    if(esqueleto.isDead){
+        return;
+    }else{
+        // Atualiza a direção aleatoriamente a cada 10 segundos
+        if (esqueleto.direction === 0) {
+            esqueleto.position.x += 0.5; // Mover para a direita
+        } else if (esqueleto.direction === 1) {
+            esqueleto.position.x -= 0.5; // Mover para a esquerda
+        } else if (esqueleto.direction === 2) {
+            esqueleto.position.y += 0.5; // Mover para baixo
+        } else if (esqueleto.direction === 3) {
+            esqueleto.position.y -= 0.5; // Mover para cima
+        }
+
+        // Alterar a direção aleatoriamente a cada 10 segundos
+        esqueleto.direction = Math.floor(Math.random() * 4); // Aleatoriamente define uma nova direção (0 a 3)
+    }
+}
+
+function drawEsqueleto() {
+    if(esqueleto.isDead || !esqueleto.visible){
+        return;
+    }else{// Limpa a área antes de desenhar
+        clearEsqueleto();
+
+        if (esqueleto.image.complete) {
+            ctxsprite.drawImage(
+                esqueleto.image,
+                esqueleto.width * esqueleto.frame, // Define o frame atual
+                esqueleto.height * 0, // Linha do sprite sheet
+                esqueleto.width, // Largura do frame
+                esqueleto.height, // Altura do frame
+                esqueleto.position.x, // Posição x no canvas
+                esqueleto.position.y, // Posição y no canvas
+                esqueleto.width * 2 , // Escala x
+                esqueleto.height * 2  // Escala y
+            );
+        }
+    }
+}
+function receberDanoEsqueleto() {
+    if(player.isDead) return;
+        if(player.isAttacking && !player.isDead){
+            esqueleto.health -= 1;
+            inimigoMorto3 = true;
+            // Reduz a saúde do slime
+            if (esqueleto.health <= 0 && !esqueleto.isDead) {
+                esqueleto.isDead = true; // Marca o slime como morto
+                esqueleto.visible = false; // Deixa o slime invisível após a morte
+            }
+        }
+    
+}
+
+function detectarColisaoJogadorEsqueleto(player) {
+    if(esqueleto.isDead){
+        return;
+    }else{
+        const EsqueletoRect = {
+            x: esqueleto.position.x,
+            y: esqueleto.position.y,
+            width: esqueleto.width * 2,
+            height: esqueleto.height * 2
+        };
+
+        const jogadorRect = {
+            x: player.position.x,
+            y: player.position.y,
+            width: player.width,
+            height: player.height
+        };
+
+        // Verifica se há colisão (simples verificação de interseção de retângulos)
+        if (
+            EsqueletoRect.x < jogadorRect.x + jogadorRect.width &&
+            EsqueletoRect.x + EsqueletoRect.width > jogadorRect.x &&
+            EsqueletoRect.y < jogadorRect.y + jogadorRect.height &&
+            EsqueletoRect.y + EsqueletoRect.height > jogadorRect.y
+        ) {
+            if(ataque && !(player.isDead)){
+                receberDano(player)
+                ataque = false;
+                setInterval(() => {
+                    ataque = true;
+                }, 1000);
+            } // Função que aplica o dano ao jogador
+        }
+    }
+}
+
+function updateEsqueleto(currentTime) {
+    if(esqueleto.isDead){
+        return;
+    }else{
+        updateEsqueletoAnimation(currentTime);
+        drawEsqueleto();
+        moveEsqueleto();
+    }
+}
+function podeMorrerEsqueleto(){
+    if(esqueleto.isDead){
+        return;
+    }else{
+        setInterval(()=>{
+            if(player.isAttacking){
+                receberDanoEsqueleto();
+            }
+        },1500)
+    }
+}
+
+setInterval(moveEsqueleto, 8500);
+setInterval(() => {
+    detectarColisaoJogadorEsqueleto(player);
+}, 100);
+//--------------------------------------------------------------------------------------------------------------------------------------
+const movables = [background, ...bordas, foreground, chopper, florist, miner, pig, slime, slimeVerde, esqueleto];
+
 
 function rectangularCollision({ rectangle1, rectangle2 }) {
     return (
@@ -953,17 +1225,29 @@ function animate(currentTime) {
         updatePigAnimation(currentTime);
         drawPig();
 
-        // Monstros
-        updateesqueletoAnimation(currentTime);
-        drawesqueleto();
+        //inimigos
+        updateSlimeAnimation(currentTime);
+        drawSlime();
+
+        updateSlimeVerde(currentTime);
+        drawSlimeVerde()
+        
+        updateEsqueleto(currentTime)
+        drawEsqueleto()
 
         // Desenhar o personagem
         player.draw();
         foreground.draw();
 
-        // Verificar ataque do jogador no esqueleto
-        checkPlayerAttack();
-    
+        //checa se slime pode morrer
+        podeMorrer();
+        podeMorrerVerde();
+        podeMorrerEsqueleto();
+
+        setInterval(() => {
+            checkGameState(vida,inimigoMorto1,inimigoMorto2,inimigoMorto3); // Certifique-se de que esses valores estão sendo atualizados corretamente
+        }, 100);
+
         let movendo = true;
         player.movendo = false
         // Movimento para cima (w)
