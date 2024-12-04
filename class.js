@@ -715,15 +715,6 @@ esqueleto.image.onload = () => {
     esqueleto.height = esqueleto.image.height / 10;
 };
 
-// Array com posições predefinidas para onde ele pode ir
-const pathPositions = [
-    { x: 300, y: 300},
-    { x: 300, y: 300 },
-    { x: 300, y: 300 },
-    { x: 700, y: 300 },
-];
-let currentTargetIndex = 0; // Índice da posição atual no array
-
 // Função para limpar a área ocupada pelo esqueleto
 function clearesqueleto() {
     ctxsprite.clearRect(
@@ -749,45 +740,42 @@ function updateesqueletoAnimation(currentTime) {
     }
 }
 
+// Função para movimentar o esqueleto aleatoriamente
+function moveEsqueletoRandomly() {
+    const speed = 2;
 
-// Função para mover o esqueleto
-function moveEsqueletoAlongPath() {
-    if (esqueleto.isDead) {
-        return; 
-    }
+    if (esqueleto.isDead) return;
 
-    const speed = 2; 
-
-    const target = pathPositions[currentTargetIndex];
-
-    const dx = target.x - esqueleto.position.x;
-    const dy = target.y - esqueleto.position.y;
-
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const threshold = 5;
-
-    if (distance < threshold) {
-        esqueleto.position.x = target.x;
-        esqueleto.position.y = target.y;
-        currentTargetIndex = (currentTargetIndex + 1) % pathPositions.length;
-        return;
-    }
-
-    const directionX = dx / distance;
-    const directionY = dy / distance;
-
-    esqueleto.velocity.x = directionX * speed;
-    esqueleto.velocity.y = directionY * speed;
-
+    // Atualiza a posição do esqueleto
     esqueleto.position.x += esqueleto.velocity.x;
     esqueleto.position.y += esqueleto.velocity.y;
 
-    if (Math.abs(dx) > Math.abs(dy)) {
-        esqueleto.direction = dx > 0 ? 'right' : 'left';
-    } else {
-        esqueleto.direction = dy > 0 ? 'down' : 'up';
+    // (Deixarei assim, se você não quiser que o esquelete acompanhe o player apague essas 6 linhas de código, entretanto, ele andará para qualquer lugar possível) 
+    // Rebate nas bordas do canvas (Mas causa o bug dele fazer Moonwalk)
+    if (esqueleto.position.x <= 0 || esqueleto.position.x >= canvas.width - esqueleto.width) {
+        esqueleto.velocity.x *= -1; // Inverte a direção horizontal
+    }
+    if (esqueleto.position.y <= 0 || esqueleto.position.y >= canvas.height - esqueleto.height) {
+        esqueleto.velocity.y *= -1; // Inverte a direção vertical
     }
 }
+
+// Alterar a direção do esqueleto aleatoriamente em intervalos regulares
+setInterval(() => {
+    const directions = [-1, 0, 1]; // Possíveis valores para movimento em x e y
+    esqueleto.velocity.x = directions[Math.floor(Math.random() * directions.length)] * 2;
+    esqueleto.velocity.y = directions[Math.floor(Math.random() * directions.length)] * 2;
+
+    // Determinar direção para animação
+    if (esqueleto.velocity.x !== 0 || esqueleto.velocity.y !== 0) {
+        if (Math.abs(esqueleto.velocity.x) > Math.abs(esqueleto.velocity.y)) {
+            esqueleto.direction = esqueleto.velocity.x > 0 ? 'right' : 'left';
+        } else {
+            esqueleto.direction = esqueleto.velocity.y > 0 ? 'down' : 'up';
+        }
+    }
+}, 2000); // Muda a direção a cada 2 segundos
+
 
 // Função para desenhar o esqueleto
 function drawesqueleto() {
@@ -802,38 +790,22 @@ function drawesqueleto() {
         
         if (esqueleto.velocity.x === 0 && esqueleto.velocity.y === 0) {
             switch (esqueleto.direction) {
-                case 'up':
-                    spriteRow = 2;
-                    break;
-                case 'down':
-                    spriteRow = 0;
-                    break;
-                case 'left':
-                    spriteRow = 1;
-                    break;
-                case 'right':
-                    spriteRow = -1;
-                    break;
+                case 'up': spriteRow = 2; break;
+                case 'down': spriteRow = 0; break;
+                case 'left': spriteRow = 1; break;
+                case 'right': spriteRow = 1; break;
             }
         } else {
             switch (esqueleto.direction) {
-                case 'up':
-                    spriteRow = 5;
-                    break;
-                case 'down':
-                    spriteRow = 3;
-                    break;
-                case 'left':
-                    spriteRow = 4;
-                    break;
-                case 'right':
-                    spriteRow = 4;
-                    break;
+                case 'up': spriteRow = 5; break;
+                case 'down': spriteRow = 3; break;
+                case 'left': spriteRow = 4; break;
+                case 'right': spriteRow = 4; break;
             }
         }
 
         ctxsprite.save();
-
+        // O esqueleto não possui sprites para a esquerda, então isso inverte a imagem caso ele se movimente para a esquerda
         if (esqueleto.direction === 'left') {
             ctxsprite.scale(-1, 1);
             ctxsprite.drawImage(
@@ -870,7 +842,7 @@ function drawesqueleto() {
 function takeDamage() {
     if (esqueleto.isDead || esqueleto.isBeingAttacked) return;  // Impede que o esqueleto seja atacado mais de uma vez rapidamente
 
-    esqueleto.isBeingAttacked = true;  // Marque que o esqueleto está sendo atacado
+    esqueleto.isBeingAttacked = true;  // Diz que o esqueleto está sendo atacado
 
     esqueleto.health -= 1;
 
@@ -883,7 +855,7 @@ function takeDamage() {
     // Após um intervalo de tempo, permite que o esqueleto seja atacado novamente
     setTimeout(() => {
         esqueleto.isBeingAttacked = false;  // Permite que o esqueleto seja atacado novamente
-    }, 500);  // ajustat esse tempo depois
+    }, 500);  // (ajustat esse tempo depois)
 }
 
 // Função para verificar se o player está atacando 
@@ -895,16 +867,35 @@ function checkPlayerAttack() {
     }
 }
 
-// Loop do jogo
+let podeCausarDano = true;  // Variável para controlar o intervalo de dano do esqueleto
+const intervaloEsqueleto = 1000; 
+
+// Função para verificar colisão entre o esqueleto e o player e aplicar dano
+function checkEsqueletoCollideWithPlayer() {
+    if (rectangularCollision({ rectangle1: esqueleto, rectangle2: player })) {
+        if (podeCausarDano && !player.isDead) {
+            receberDano();  // Chama a função de dano do player
+            podeCausarDano = false;  // Desabilita a capacidade de causar dano
+
+            // Define um tempo para o esqueleto poder causar dano novamente
+            setTimeout(() => {
+                podeCausarDano = true;  // Libera o esqueleto para causar dano novamente após o intervalo
+            }, intervaloEsqueleto);
+        }
+    }
+}
+
+// Atualizar o gameLoop para incluir o movimento aleatório
 function gameLoop(currentTime) {
     ctxsprite.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Atualizações e desenhos do esqueleto
     updateesqueletoAnimation(currentTime);
-    moveEsqueletoAlongPath(); // Movimento entre posições predefinidas
+    moveEsqueletoRandomly(); // Movimento aleatório
     drawesqueleto();
+    checkEsqueletoCollideWithPlayer();
 
     requestAnimationFrame(gameLoop);
-    
 }
 
 // Inicia o loop do jogo
@@ -1164,4 +1155,4 @@ window.addEventListener('keyup', (event) => {
         if (event.key === 's') player.currentDirection = 0;  // Parado para baixo
         if (event.key === 'd') player.currentDirection = 32;  // Parado para a direita
     }
-});
+})
